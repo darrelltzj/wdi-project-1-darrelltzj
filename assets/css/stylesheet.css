@@ -1,9 +1,22 @@
-h1 {
-  color:navy
+* {
+  padding: 0;
+  margin: 0;
 }
 
 .container {
   margin: 0 auto;
   max-width: 800px;
-  width:90%
+  width:100%
+  position: relative;
+}
+
+h1 {
+  color:maroon
+}
+
+canvas {
+  background: #eee;
+  /*background: navy;*/
+  display: block;
+  margin: 0 auto;
 }
