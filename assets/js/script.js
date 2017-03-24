@@ -1,54 +1,73 @@
 // jquery on press - OK
 // Raindrop
-//Create Image Generator
 //collision detection
-// mouse
+//Create Image Generator / movement - invert when left
 // animate images
+//event listener for resize
+//pause
+// mouse
+//initialize
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
   var ctx = canvasTag.getContext("2d")
+  $('#gameCanvas')[0].width = window.innerWidth
+  $('#gameCanvas')[0].height = window.innerHeight
 
-  var characterSizePercent = 0.11
-  var characterPosYOffsetPercent = 0.97
-  var characterWidth = characterSizePercent * canvasTag.width
-  var characterHeight = characterWidth
-  var characterPosX = (canvasTag.width - characterWidth) / 2
-  var characterPosY = characterPosYOffsetPercent * canvasTag.height - characterHeight
+  var cat = new Character(0.11, 0.97, 3)
 
-  var rightPressed = false;
-  var leftPressed = false;
+  function Character(sizePercent, posYOffsetPercent, speed) {
+    this.sizePercent = sizePercent
+    this.posYOffsetPercent = posYOffsetPercent
+    this.width = this.sizePercent * canvasTag.width
+    this.height = this.width //need to adjust to % of canvas
+    this.posX = (canvasTag.width - this.width) / 2
+    this.posY = this.posYOffsetPercent * canvasTag.height - this.height
+    this.speed = speed
+    this.rightPressed = false;
+    this.leftPressed = false;
+  }
 
-  $(document).on('keydown', function (e) {
-    if(e.keyCode == 39) {
-      rightPressed = true
+  Character.prototype.control = function () {
+
+    $(document).on('keydown', function (e) {
+      if(e.keyCode == 39) {
+        this.rightPressed = true
+      }
+      else if(e.keyCode == 37) {
+        this.leftPressed = true
+      }
+    }.bind(this))
+
+    $(document).on('keyup', function (e) {
+      if(e.keyCode == 39) {
+        this.rightPressed = false
+      }
+      else if(e.keyCode == 37) {
+        this.leftPressed = false
+      }
+    }.bind(this))
+
+    if(this.rightPressed && this.posX < canvasTag.width - this.width) {
+      this.posX += this.speed
     }
-    else if(e.keyCode == 37) {
-      leftPressed = true
+    else if(this.leftPressed && this.posX > 0) {
+      this.posX -= this.speed
     }
-  })
-  $(document).on('keyup', function (e) {
-    if(e.keyCode == 39) {
-      rightPressed = false
-    }
-    else if(e.keyCode == 37) {
-      leftPressed = false
-    }
-  })
+  }
 
-  // function Character() {
-  //
-  // }
-  //
-  // Character.prototype.checkMovement = function () {
-  //
-  // }
+  Character.prototype.resize = function () {
+    this.width = this.sizePercent * canvasTag.width
+    this.height = this.width //need to adjust to % of canvas
+    // this.posX = (canvasTag.width - this.width) / 2
+    this.posY = this.posYOffsetPercent * canvasTag.height - this.height
+  }
 
-  function drawCharacter() {
+  function drawCat() {
     // ctx.beginPath();
-    var character = new Image();
-    character.src = 'assets/img/cat.gif';
-    ctx.drawImage(character, characterPosX, characterPosY, characterWidth, characterHeight);
+    var catImage = new Image();
+    catImage.src = 'assets/img/bunny.gif';
+    ctx.drawImage(catImage, cat.posX, cat.posY, cat.width, cat.height);
     // ctx.closePath();
   }
 
@@ -63,23 +82,16 @@ $(document).ready(function () {
   function resize() {
     $('#gameCanvas')[0].width = window.innerWidth
     $('#gameCanvas')[0].height = window.innerHeight
-    characterWidth = characterSizePercent * canvasTag.width
-    characterHeight = characterWidth
-    characterPosY = characterPosYOffsetPercent * canvasTag.height - characterHeight
+    cat.resize()
   }
 
-  function draw() {
+  function run() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
-    resize()
+    // resize() // use listener
     drawBackground()
-    drawCharacter()
+    drawCat()
+    cat.control()
 
-    if(rightPressed && characterPosX < canvasTag.width - characterWidth) {
-      characterPosX += 3;
-    }
-    else if(leftPressed && characterPosX > 0) {
-      characterPosX -= 3;
-    }
   }
-  setInterval(draw,10)
+  setInterval(run,10)
 })
