@@ -1,5 +1,5 @@
 // jquery on press - OK
-// Raindrop
+// Raindrop - OK
 // collision detection
 // Create Image Generator / movement - invert when left
 // animate images
@@ -35,9 +35,17 @@ $(document).ready(function () {
   ]
   var cat = new Character(0.11, 0.97, catFrames, 2, 3)
 
+  var spawnDuration = 20
   var raindropsArr = []
+  var spawnTimer = spawnDuration
   function spawnRaindrops () {
-    if (raindropsArr.length <= 5) {
+    // if (raindropsArr.length <= 1) {
+    if (spawnTimer <= 0) {
+      this.raindrop = new Raindrops
+      raindropsArr.push(this.raindrop)
+      spawnTimer = spawnDuration
+    }
+    else if (raindropsArr.length === 0) {
       this.raindrop = new Raindrops
       raindropsArr.push(this.raindrop)
     }
@@ -154,6 +162,7 @@ $(document).ready(function () {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     // resize() // use listener
     createFrame(background)
+    spawnTimer--
     spawnRaindrops()
     raindropsArr.forEach(function (raindrop, i) {
       if (raindrop.posY <= canvasTag.height) {
