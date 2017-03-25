@@ -8,7 +8,8 @@
 // pause
 // mouse
 // initialize
-// mouse
+// mouse Character
+// rain frequency
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
@@ -36,7 +37,7 @@ $(document).ready(function () {
 
   var raindropsArr = []
   function spawnRaindrops () {
-    if (raindropsArr.length <= 7) {
+    if (raindropsArr.length <= 5) {
       this.raindrop = new Raindrops
       raindropsArr.push(this.raindrop)
     }
@@ -154,16 +155,15 @@ $(document).ready(function () {
     // resize() // use listener
     createFrame(background)
     spawnRaindrops()
-    raindropsArr.filter(function (raindrop) {
-      // console.log(raindrop.posY <= canvasTag.height,raindropsArr)
-      return raindrop.posY <= canvasTag.height
+    raindropsArr.forEach(function (raindrop, i) {
+      if (raindrop.posY <= canvasTag.height) {
+        createFrame(raindrop)
+        raindrop.move()
+      }
+      else {
+        raindropsArr.splice(i,1)
+      }
     })
-    // console.log(raindropsArr.length)
-    raindropsArr.forEach(function (raindrop) {
-      createFrame(raindrop)
-      raindrop.move()
-    })
-    // console.log(raindropsArr)
     createFrame(cat)
     cat.control()
   }
