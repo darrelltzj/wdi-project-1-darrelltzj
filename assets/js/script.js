@@ -1,15 +1,17 @@
 // jquery on press - OK
 // Raindrop - OK
-// collision detection rain & character
-// Create Image Generator / movement - (sprite) invert when left
-// animate images
-// timer / end game
+// collision detection rain - OK
+// end game - OK
+// timer - OK
+// rain frequency stages
+// pause function
+// restart & initialize options
+// Create sprite - cat
 // event listener for resize
-// pause
-// mouse
-// initialize
-// mouse Character
-// rain frequency
+// mouse Character & collision (2 player)
+// Create sprite - mouse
+// AI
+// wind
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
@@ -18,13 +20,33 @@ $(document).ready(function () {
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
 
-  var background = {
+  var seconds = 0
+  var minutes = 0
+  var gameEnvironment = {
     width: canvasTag.width,
     height: canvasTag.height,
     posX: 0,
     posY: 0,
     frames: ['background.jpg'],
     selectedFrame: 0,
+    totalTimeCount: 0,
+    second: 0,
+    minute: 0,
+    timerId: 0,
+    gameOver: false,
+    updateTime: function () {
+      this.totalTimeCount++
+      if (!this.gameOver) {
+        this.second = this.twoDigit(Math.floor((gameEnvironment.totalTimeCount % 60)))
+        this.minute = this.twoDigit(Math.floor(gameEnvironment.totalTimeCount / 60))
+      }
+    },
+    twoDigit: function (digit) {
+      return (digit < 10) ? '0' + digit.toString() : digit.toString()
+    },
+    startTimer: function () {
+      this.timerId = setInterval(this.updateTime.bind(this), 1000)
+    }
   }
   var offsetPercent = 0.97
   var characterArr = []
@@ -121,6 +143,19 @@ $(document).ready(function () {
     }
   }
 
+  function checkCharacterLives() {
+    characterArr.forEach(function (character, i) {
+      if (character.lives === 0) {
+        characterArr.splice(i,1)
+      }
+    })
+  }
+  function drawCharacter() {
+    characterArr.forEach(function (character) {
+      createFrame(character)
+    })
+    displayCatLives()
+  }
   function Character(sizePercent, posYOffsetPercent, frames, reverseFrameIndex, velocity) {
     this.sizePercent = sizePercent
     this.posYOffsetPercent = posYOffsetPercent
@@ -200,10 +235,35 @@ $(document).ready(function () {
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
   }
 
+  function isGameOver() {
+    if (characterArr.length === 0) {
+      gameEnvironment.gameOver = true
+      displayGameOver()
+      raindropSpawnDuration = 100
+    }
+    // document.location.reload()
+  }
+
   function createFrame(item) {
     this.image = new Image()
     this.image.src = 'assets/img/' + item.frames[item.selectedFrame]
     ctx.drawImage(this.image, item.posX, item.posY, item.width, item.height)
+  }
+
+  function displayTime() {
+    ctx.font = "40px Arial"
+    ctx.fillStyle = "#716969"
+    ctx.fillText(gameEnvironment.minute + " : " + gameEnvironment.second, (0.46 * canvasTag.width), (0.05 * canvasTag.height))
+  }
+  function displayCatLives() {
+    ctx.font = "32px Arial"
+    ctx.fillStyle = "#716969"
+    ctx.fillText("Cat\'s Lives: " + cat.lives, (0.01 * canvasTag.width), (0.05 * canvasTag.height))
+  }
+  function displayGameOver() {
+    ctx.font = "72px Arial"
+    ctx.fillStyle = "#716969"
+    ctx.fillText("Game Over", (0.37 * canvasTag.width), (0.4 * canvasTag.height))
   }
 
   function resize() {
@@ -215,12 +275,17 @@ $(document).ready(function () {
   function run() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     // resize() // use listener
-    createFrame(background)
+    createFrame(gameEnvironment)
     spawnRaindrops()
     checkRaindrops()
-    createFrame(cat)
     cat.control()
-    console.log(cat.lives)
+    drawCharacter()
+    checkCharacterLives()
+    isGameOver()
+    displayTime()
+    requestAnimationFrame(run)
   }
-  setInterval(run,10)
+  run()
+  // setInterval(run,10)
+  gameEnvironment.startTimer()
 })
