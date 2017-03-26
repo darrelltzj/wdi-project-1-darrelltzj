@@ -1,7 +1,7 @@
 // jquery on press - OK
 // Raindrop - OK
-// collision detection
-// Create Image Generator / movement - invert when left
+// collision detection rain & character
+// Create Image Generator / movement - (sprite) invert when left
 // animate images
 // timer / end game
 // event listener for resize
@@ -26,6 +26,13 @@ $(document).ready(function () {
     frames: ['background.jpg'],
     selectedFrame: 0,
   }
+  var offsetPercent = 0.97
+  var characterArr = []
+
+  var raindropSpawnDuration = 20
+  var raindropRemovalDuration = 5
+  var raindropsArr = []
+  var raindropSpawnTimer = raindropSpawnDuration
 
   var catFrames = [
     'bunny.gif',
@@ -33,40 +40,85 @@ $(document).ready(function () {
     'bettle.gif',
     'splat.png'
   ]
-  var cat = new Character(0.11, 0.97, catFrames, 2, 3)
+  var cat = new Character(0.11, offsetPercent, catFrames, 2, 3)
+  characterArr.push(cat)
 
-  var spawnDuration = 20
-  var raindropsArr = []
-  var spawnTimer = spawnDuration
   function spawnRaindrops () {
-    // if (raindropsArr.length <= 1) {
-    if (spawnTimer <= 0) {
+    if (raindropSpawnTimer <= 0) {
       this.raindrop = new Raindrops
       raindropsArr.push(this.raindrop)
-      spawnTimer = spawnDuration
+      raindropSpawnTimer = raindropSpawnDuration
     }
     else if (raindropsArr.length === 0) {
       this.raindrop = new Raindrops
       raindropsArr.push(this.raindrop)
     }
+    raindropSpawnTimer--
+  }
+  function checkRaindrops () {
+    raindropsArr.forEach(function (raindrop, i) {
+      createFrame(raindrop)
+      raindrop.collisionDetection()
+      raindrop.changeFrame()
+      raindrop.move()
+      if (raindrop.collided) {
+        if (raindrop.raindropRemovalTime === 0) {
+          raindropsArr.splice(i,1)
+        }
+        else {
+          raindrop.raindropRemovalTime--
+        }
+      }
+    })
   }
   function Raindrops () {
-    this.sizePercent = 0.01
+    this.sizePercent = 0.02
     this.width = this.sizePercent * canvasTag.width
     this.height = this.width
     this.posX = this.randomX()
-    this.posY = this.height
+    this.posY = 0
     this.frames = ['raindrop.png', 'splash.png', 'splat.png']
     this.selectedFrame = 0
     this.velocity = 0
-    this.gravity = 0.1
+    this.gravity = 0.07
+    this.collided = false
+    this.raindropRemovalTime = raindropRemovalDuration
   }
   Raindrops.prototype.randomX = function () {
     return Math.round(Math.random() * canvasTag.width)
   }
   Raindrops.prototype.move = function () {
-    this.posY += this.velocity
-    this.velocity += this.gravity
+    if (!this.collided) {
+      this.posY += this.velocity
+      this.velocity += this.gravity
+    }
+    else {
+      this.velocity = 0
+      this.gravity = 0
+    }
+  }
+  Raindrops.prototype.changeFrame = function () {
+    if (this.collided) {
+      this.selectedFrame = 2
+    }
+    else {
+      this.selectedFrame = 0
+    }
+  }
+  Raindrops.prototype.collisionDetection = function () {
+    if (this.posY + this.height >= offsetPercent * canvasTag.height) {
+      this.collided = true
+      this.posY = offsetPercent * canvasTag.height - this.height
+    }
+    else {
+      characterArr.forEach(function (character) {
+        if (!this.collided && this.posX > character.posX && this.posX + this.width < character.posX + character.width && (this.posY + this.height) >= character.posY) {
+          this.collided = true
+          this.posY = character.posY - this.height
+          character.lives--
+        }
+      }.bind(this))
+    }
   }
 
   function Character(sizePercent, posYOffsetPercent, frames, reverseFrameIndex, velocity) {
@@ -83,6 +135,8 @@ $(document).ready(function () {
 
     this.faceRight = true
     this.velocity = velocity
+
+    this.lives = 9
 
     this.rightPressed = false;
     this.leftPressed = false;
@@ -162,19 +216,11 @@ $(document).ready(function () {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     // resize() // use listener
     createFrame(background)
-    spawnTimer--
     spawnRaindrops()
-    raindropsArr.forEach(function (raindrop, i) {
-      if (raindrop.posY <= canvasTag.height) {
-        createFrame(raindrop)
-        raindrop.move()
-      }
-      else {
-        raindropsArr.splice(i,1)
-      }
-    })
+    checkRaindrops()
     createFrame(cat)
     cat.control()
+    console.log(cat.lives)
   }
   setInterval(run,10)
 })
