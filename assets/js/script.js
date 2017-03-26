@@ -3,10 +3,16 @@
 // collision detection rain - OK
 // end game - OK
 // timer - OK
+
+// Create sprite - cat // height342 width 575
+// - edit changeFrame & createFrame function
+// split rightfacing and reverse facing img
+// need counter - change frame after a few miliseconds
+// - activate changeFrame even if key is not pressed: press --> image roll 1-last-1
+
 // rain frequency stages
 // pause function
 // restart & initialize options
-// Create sprite - cat
 // event listener for resize
 // mouse Character & collision (2 player)
 // Create sprite - mouse
@@ -56,13 +62,9 @@ $(document).ready(function () {
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
-  var catFrames = [
-    'bunny.gif',
-    'cat.gif',
-    'bettle.gif',
-    'splat.png'
-  ]
-  var cat = new Character(0.11, offsetPercent, catFrames, 2, 3)
+
+  var catFrames = ['cat/1.png', 'cat/1.png', 'cat/2.png', 'cat/2.png', 'cat/3.png', 'cat/3.png', 'cat/4.png', 'cat/4.png', 'cat/5.png', 'cat/5.png', 'cat/6.png', 'cat/6.png', 'cat/7.png', 'cat/7.png', 'cat/8.png', 'cat/8.png', 'cat/9.png', 'cat/9.png', 'cat/10.png', 'cat/10.png', 'cat/11.png', 'cat/11.png', 'cat/12.png', 'cat/12.png', 'cat/13.png', 'cat/13.png', 'cat/14.png', 'cat/14.png', 'cat/15.png', 'cat/15.png', 'cat/16.png', 'cat/16.png']
+  var cat = new Character(0.11, offsetPercent, catFrames, 16, 3)
   characterArr.push(cat)
 
   function spawnRaindrops () {
@@ -161,7 +163,7 @@ $(document).ready(function () {
     this.posYOffsetPercent = posYOffsetPercent
 
     this.width = this.sizePercent * canvasTag.width
-    this.height = this.width //need to adjust to % of canvas
+    this.height = (342 / 575) * this.width //need to adjust to % of canvas
     this.posX = (canvasTag.width - this.width) / 2
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
     this.frames = frames
@@ -212,20 +214,30 @@ $(document).ready(function () {
   }
   Character.prototype.changeFrame = function () {
     if (this.faceRight) {
-      if (this.selectedFrame === 1 || this.selectedFrame >= this.reverseFrameIndex) {
+      if (this.selectedFrame >= this.reverseFrameIndex) {
         this.selectedFrame = 0
       }
       else {
         this.selectedFrame += 1
       }
+
+      // if (this.selectedFrame >= this.reverseFrameIndex) {
+      //   this.selectedFrame = 0
+      // }
+      // else {
+      //   this.selectedFrame += 1
+      // }
     }
     else {
-      if (this.selectedFrame === this.frames.length - 1 || this.selectedFrame <= this.reverseFrameIndex - 1) {
-        this.selectedFrame = 2
+      if (this.selectedFrame < this.reverseFrameIndex) {
+        this.selectedFrame = this.reverseFrameIndex
       }
-      else {
-        this.selectedFrame += 1
-      }
+      // if (this.selectedFrame === this.frames.length - 1 || this.selectedFrame <= this.reverseFrameIndex - 1) {
+      //   this.selectedFrame = this.reverseFrameIndex
+      // }
+      // else {
+      //   this.selectedFrame += 1
+      // }
     }
   }
   Character.prototype.resize = function () {
@@ -284,6 +296,7 @@ $(document).ready(function () {
     isGameOver()
     displayTime()
     requestAnimationFrame(run)
+    console.log(gameEnvironment.totalTimeCount, cat.selectedFrame)
   }
   run()
   // setInterval(run,10)
