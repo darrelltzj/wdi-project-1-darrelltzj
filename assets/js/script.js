@@ -5,10 +5,10 @@
 // timer - OK
 
 // Create sprite - cat // height342 width 575
-// - edit changeFrame & createFrame function
-// split rightfacing and reverse facing img
+// - edit faceOrientation & createFrame function
+// split rightfacing and reverse facing img - OK
 // need counter - change frame after a few miliseconds
-// - activate changeFrame even if key is not pressed: press --> image roll 1-last-1
+// - activate faceOrientation even if key is not pressed: press --> image roll 1-last-1
 
 // rain frequency stages
 // pause function
@@ -33,8 +33,9 @@ $(document).ready(function () {
     height: canvasTag.height,
     posX: 0,
     posY: 0,
-    frames: ['background.jpg'],
+    imageFolder: 'background',
     selectedFrame: 0,
+    imageFormat: '\.jpg',
     totalTimeCount: 0,
     second: 0,
     minute: 0,
@@ -62,9 +63,7 @@ $(document).ready(function () {
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
-
-  var catFrames = ['cat/1.png', 'cat/1.png', 'cat/2.png', 'cat/2.png', 'cat/3.png', 'cat/3.png', 'cat/4.png', 'cat/4.png', 'cat/5.png', 'cat/5.png', 'cat/6.png', 'cat/6.png', 'cat/7.png', 'cat/7.png', 'cat/8.png', 'cat/8.png', 'cat/9.png', 'cat/9.png', 'cat/10.png', 'cat/10.png', 'cat/11.png', 'cat/11.png', 'cat/12.png', 'cat/12.png', 'cat/13.png', 'cat/13.png', 'cat/14.png', 'cat/14.png', 'cat/15.png', 'cat/15.png', 'cat/16.png', 'cat/16.png']
-  var cat = new Character(0.11, offsetPercent, catFrames, 16, 3)
+  var cat = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
   characterArr.push(cat)
 
   function spawnRaindrops () {
@@ -83,7 +82,7 @@ $(document).ready(function () {
     raindropsArr.forEach(function (raindrop, i) {
       createFrame(raindrop)
       raindrop.collisionDetection()
-      raindrop.changeFrame()
+      raindrop.faceOrientation()
       raindrop.move()
       if (raindrop.collided) {
         if (raindrop.raindropRemovalTime === 0) {
@@ -101,8 +100,9 @@ $(document).ready(function () {
     this.height = this.width
     this.posX = this.randomX()
     this.posY = 0
-    this.frames = ['raindrop.png', 'splash.png', 'splat.png']
+    this.imageFolder = 'raindrop'
     this.selectedFrame = 0
+    this.imageFormat = '\.png'
     this.velocity = 0
     this.gravity = 0.07
     this.collided = false
@@ -121,9 +121,9 @@ $(document).ready(function () {
       this.gravity = 0
     }
   }
-  Raindrops.prototype.changeFrame = function () {
+  Raindrops.prototype.faceOrientation = function () {
     if (this.collided) {
-      this.selectedFrame = 2
+      this.selectedFrame = 1
     }
     else {
       this.selectedFrame = 0
@@ -158,7 +158,7 @@ $(document).ready(function () {
     })
     displayCatLives()
   }
-  function Character(sizePercent, posYOffsetPercent, frames, reverseFrameIndex, velocity) {
+  function Character(sizePercent, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity) {
     this.sizePercent = sizePercent
     this.posYOffsetPercent = posYOffsetPercent
 
@@ -166,9 +166,14 @@ $(document).ready(function () {
     this.height = (342 / 575) * this.width //need to adjust to % of canvas
     this.posX = (canvasTag.width - this.width) / 2
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
-    this.frames = frames
+
+    this.mainImageFolder = mainImageFolder
+    this.orientation = 0 //0 is right 1 is left
     this.selectedFrame = 0
-    this.reverseFrameIndex = reverseFrameIndex
+    this.imageFormat = imageFormat
+    this.frameLength = frameLength
+    this.imageFolder = this.mainImageFolder + '\/' + this.orientation
+    this.frameChangeDelay = this.frameLength / 2
 
     this.faceRight = true
     this.velocity = velocity
@@ -198,28 +203,23 @@ $(document).ready(function () {
     }.bind(this))
 
     this.move()
+    this.faceOrientation()
+    this.animateFrame()
   }
   Character.prototype.move = function () {
     if(this.rightPressed && this.posX < canvasTag.width - this.width) {
       this.posX += this.velocity
       this.faceRight = true
-      this.changeFrame()
     }
 
     else if(this.leftPressed && this.posX > 0) {
       this.posX -= this.velocity
       this.faceRight = false
-      this.changeFrame()
     }
   }
-  Character.prototype.changeFrame = function () {
+  Character.prototype.faceOrientation = function () {
     if (this.faceRight) {
-      if (this.selectedFrame >= this.reverseFrameIndex) {
-        this.selectedFrame = 0
-      }
-      else {
-        this.selectedFrame += 1
-      }
+      this.orientation = 0
 
       // if (this.selectedFrame >= this.reverseFrameIndex) {
       //   this.selectedFrame = 0
@@ -228,10 +228,12 @@ $(document).ready(function () {
       //   this.selectedFrame += 1
       // }
     }
-    else {
-      if (this.selectedFrame < this.reverseFrameIndex) {
-        this.selectedFrame = this.reverseFrameIndex
-      }
+    else if (!this.faceRight) {
+      this.orientation = 1
+
+      // if (this.selectedFrame < this.reverseFrameIndex) {
+      //   this.selectedFrame = this.reverseFrameIndex
+      // }
       // if (this.selectedFrame === this.frames.length - 1 || this.selectedFrame <= this.reverseFrameIndex - 1) {
       //   this.selectedFrame = this.reverseFrameIndex
       // }
@@ -239,6 +241,22 @@ $(document).ready(function () {
       //   this.selectedFrame += 1
       // }
     }
+    this.imageFolder = this.mainImageFolder + '\/' + this.orientation
+  }
+  Character.prototype.animateFrame = function () {
+    if (this.frameChangeDelay === 0) {
+      if (this.selectedFrame === this.frameLength - 1) {
+        this.selectedFrame = 0
+      }
+      else {
+        this.selectedFrame++
+      }
+      this.frameChangeDelay = this.frameLength / 2
+    }
+    else {
+      this.frameChangeDelay--
+    }
+    // console.log(this.selectedFrame)
   }
   Character.prototype.resize = function () {
     this.width = this.sizePercent * canvasTag.width
@@ -258,7 +276,7 @@ $(document).ready(function () {
 
   function createFrame(item) {
     this.image = new Image()
-    this.image.src = 'assets/img/' + item.frames[item.selectedFrame]
+    this.image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
     ctx.drawImage(this.image, item.posX, item.posY, item.width, item.height)
   }
 
@@ -296,7 +314,7 @@ $(document).ready(function () {
     isGameOver()
     displayTime()
     requestAnimationFrame(run)
-    console.log(gameEnvironment.totalTimeCount, cat.selectedFrame)
+    // console.log(gameEnvironment.totalTimeCount, cat.selectedFrame)
   }
   run()
   // setInterval(run,10)
