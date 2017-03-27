@@ -1,3 +1,4 @@
+// -----TO DO-----
 // jquery on press - OK
 // Raindrop - OK
 // collision detection rain - OK
@@ -9,13 +10,16 @@
 // need counter - change frame after a few miliseconds - OK
 // - activate faceOrientation even if key is not pressed: press --> image roll 1-last-1 - OK
 // stop animation when key is not pressed - OK
-
 // rain frequency stages - check game over - OK
+
 // pause function - save and restore
 // restart & initialize options - if else in run function - gameover window and run window
+// mouse control
+// event listener for switch screen
 // event listener for resize
 // mouse Character & collision (2 player)
 // Create sprite - mouse
+// font
 // AI
 // wind
 
@@ -38,10 +42,11 @@ $(document).ready(function () {
     second: 0,
     minute: 0,
     timerId: 0,
+    pause: false,
     gameOver: false,
     updateTime: function () {
       this.totalTimeCount++
-      if (!this.gameOver) {
+      if (!this.gameOver && !this.pause) {
         this.second = this.twoDigit(Math.floor((gameEnvironment.totalTimeCount % 60)))
         this.minute = this.twoDigit(Math.floor(gameEnvironment.totalTimeCount / 60))
       }
@@ -52,12 +57,16 @@ $(document).ready(function () {
     startTimer: function () {
       this.timerId = setInterval(this.updateTime.bind(this), 1000)
     },
+    pauseTimer: function () {
+      clearInterval(this.timerId)
+    },
     controlStages: function () {
       if (!this.gameOver) {
         switch(true) {
           case (this.totalTimeCount > 0 && this.totalTimeCount <= 2):
           raindropSpawnDuration = 12
           displayCategory(5)
+          displayPauseInstructions()
           break
           case (this.totalTimeCount > 2 && this.totalTimeCount <= 5):
           raindropSpawnDuration = 12
@@ -99,10 +108,27 @@ $(document).ready(function () {
           break
           default:
           raindropSpawnDuration = 20
-          }
         }
       }
+    },
+    checkPause: function() {
+      if (this.pause) {
+        $(document).on('keydown', function (e) {
+          if(e.keyCode == 32) {
+            this.pause = false
+          }
+        }.bind(this))
+      }
+      else {
+        $(document).on('keydown', function (e) {
+          if(e.keyCode == 32) {
+            this.pause = true
+          }
+        }.bind(this))
+      }
+      // this.activatePauseFrame()
     }
+  }
 
   var offsetPercent = 0.97
   var characterArr = []
@@ -354,6 +380,22 @@ $(document).ready(function () {
     ctx.fillStyle = "#716969"
     ctx.fillText("Get Ready", (0.37 * canvasTag.width), (0.4 * canvasTag.height))
   }
+  function displayPauseInstructions() {
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#2D2E2E"
+    ctx.fillText("Press Space to Pause", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+  }
+  function displayPause() {
+    ctx.font = "72px Arial"
+    ctx.fillStyle = "#716969"
+    ctx.fillText("Game Paused", (0.35 * canvasTag.width), (0.4 * canvasTag.height))
+    displayResumeInstructions()
+  }
+  function displayResumeInstructions() {
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#2D2E2E"
+    ctx.fillText("Press Space to Resume", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+  }
   function displayGameOver() {
     ctx.font = "72px Arial"
     ctx.fillStyle = "#716969"
@@ -366,6 +408,22 @@ $(document).ready(function () {
     cat.resize()
   }
 
+  function pause() {
+    ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
+    createFrame(gameEnvironment)
+    displayPause()
+    drawCharacter()
+    gameEnvironment.checkPause()
+    displayTime()
+    if (gameEnvironment.pause) {
+      requestAnimationFrame(pause)
+    }
+    else {
+      gameEnvironment.startTimer()
+      requestAnimationFrame(run)
+    }
+  }
+
   function run() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     // resize() // use listener
@@ -376,9 +434,16 @@ $(document).ready(function () {
     drawCharacter()
     checkCharacterLives()
     gameEnvironment.controlStages()
+    gameEnvironment.checkPause()
     isGameOver()
     displayTime()
-    requestAnimationFrame(run)
+    if (gameEnvironment.pause) {
+      gameEnvironment.pauseTimer()
+      requestAnimationFrame(pause)
+    }
+    else {
+      requestAnimationFrame(run)
+    }
     // console.log(gameEnvironment.totalTimeCount, cat.selectedFrame)
   }
   run()
