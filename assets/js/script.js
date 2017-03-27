@@ -26,8 +26,6 @@ $(document).ready(function () {
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
 
-  var seconds = 0
-  var minutes = 0
   var gameEnvironment = {
     width: canvasTag.width,
     height: canvasTag.height,
@@ -53,6 +51,43 @@ $(document).ready(function () {
     },
     startTimer: function () {
       this.timerId = setInterval(this.updateTime.bind(this), 1000)
+    },
+    controlStages: function () {
+      switch(true) {
+        case (this.second > 5 && this.second <= 10):
+        raindropSpawnDuration = 19
+        break;
+        case (this.second > 10 && this.second <= 15):
+        raindropSpawnDuration = 17
+        break;
+        case (this.second > 15 && this.second <= 20):
+        raindropSpawnDuration = 14
+        break;
+        case (this.second > 20 && this.second <= 25):
+        raindropSpawnDuration = 10
+        break;
+        case (this.second > 25 && this.second <= 30):
+        raindropSpawnDuration = 5
+        break;
+        case (this.second > 30 && this.second <= 40):
+        raindropSpawnDuration = 3
+        break;
+        case (this.second > 40 && this.second <= 50):
+        raindropSpawnDuration = 2
+        break;
+        case (this.second > 50 && this.second <= 55):
+        raindropSpawnDuration = 1
+        break;
+        case (this.second > 55 && this.second <= 60):
+        raindropSpawnDuration = 0.5
+        break;
+        case (this.second > 60):
+        raindropSpawnDuration = 0.1
+        break;
+        default:
+        raindropSpawnDuration = 20
+      }
+      console.log(raindropSpawnDuration)
     }
   }
   var offsetPercent = 0.97
@@ -318,6 +353,7 @@ $(document).ready(function () {
     checkCharacterLives()
     isGameOver()
     displayTime()
+    gameEnvironment.controlStages()
     requestAnimationFrame(run)
     // console.log(gameEnvironment.totalTimeCount, cat.selectedFrame)
   }
