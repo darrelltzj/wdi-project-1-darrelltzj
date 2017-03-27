@@ -3,12 +3,12 @@
 // collision detection rain - OK
 // end game - OK
 // timer - OK
-
 // Create sprite - cat // height342 width 575
 // - edit faceOrientation & createFrame function
 // split rightfacing and reverse facing img - OK
-// need counter - change frame after a few miliseconds
-// - activate faceOrientation even if key is not pressed: press --> image roll 1-last-1
+// need counter - change frame after a few miliseconds - OK
+// - activate faceOrientation even if key is not pressed: press --> image roll 1-last-1 - OK
+// stop animation when key is not pressed - OK
 
 // rain frequency stages
 // pause function
@@ -204,7 +204,7 @@ $(document).ready(function () {
 
     this.move()
     this.faceOrientation()
-    this.animateFrame()
+    this.controlAnimation()
   }
   Character.prototype.move = function () {
     if(this.rightPressed && this.posX < canvasTag.width - this.width) {
@@ -242,6 +242,11 @@ $(document).ready(function () {
       // }
     }
     this.imageFolder = this.mainImageFolder + '\/' + this.orientation
+  }
+  Character.prototype.controlAnimation = function () {
+    if (this.rightPressed || this.leftPressed || this.selectedFrame !== 0) {
+      this.animateFrame()
+    }
   }
   Character.prototype.animateFrame = function () {
     if (this.frameChangeDelay === 0) {
