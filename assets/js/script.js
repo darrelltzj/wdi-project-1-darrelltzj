@@ -14,9 +14,9 @@
 
 // pause function - save and restore - check when game Over
 // restart options
-// initialize options - if else in run function - gameover window and run window
-// mouse control // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project
-// event listener for switch screen - requestAnimationFrame() continues to run
+// initialize options - if else in runCanvas function - gameover window and runCanvas window
+// mouse control // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
+// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/
 // event listener for resize
 // mouse Character & collision (2 player)
 // Create sprite - mouse
@@ -31,6 +31,7 @@ $(document).ready(function () {
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
 
+  var offsetPercent = 0.97 //for background image
   var gameEnvironment = {
     width: canvasTag.width,
     height: canvasTag.height,
@@ -38,108 +39,15 @@ $(document).ready(function () {
     posY: 0,
     imageFolder: 'background',
     selectedFrame: 0,
-    imageFormat: '\.jpg',
-    totalTimeCount: 0,
-    second: 0,
-    minute: 0,
-    timerId: 0,
-    pause: false,
-    gameOver: false,
-    updateTime: function () {
-      this.totalTimeCount++
-      if (!this.gameOver && !this.pause) {
-        this.second = this.twoDigit(Math.floor((gameEnvironment.totalTimeCount % 60)))
-        this.minute = this.twoDigit(Math.floor(gameEnvironment.totalTimeCount / 60))
-      }
-    },
-    twoDigit: function (digit) {
-      return (digit < 10) ? '0' + digit.toString() : digit.toString()
-    },
-    startTimer: function () {
-      this.timerId = setInterval(this.updateTime.bind(this), 1000)
-    },
-    pauseTimer: function () {
-      clearInterval(this.timerId)
-    },
-    controlStages: function () {
-      if (!this.gameOver) {
-        switch(true) {
-          case (this.totalTimeCount > 0 && this.totalTimeCount <= 2):
-          raindropSpawnDuration = 12
-          displayCategory(5)
-          displayPauseInstructions()
-          break
-          case (this.totalTimeCount > 2 && this.totalTimeCount <= 5):
-          raindropSpawnDuration = 12
-          break
-          case (this.totalTimeCount > 5 && this.totalTimeCount <= 7):
-          raindropSpawnDuration = 8
-          displayCategory(4)
-          break
-          case (this.totalTimeCount > 7 && this.totalTimeCount <= 10):
-          raindropSpawnDuration = 8
-          break
-          case (this.totalTimeCount > 10 && this.totalTimeCount <= 12):
-          raindropSpawnDuration = 6
-          displayCategory(3)
-          break
-          case (this.totalTimeCount > 12 && this.totalTimeCount <= 20):
-          raindropSpawnDuration = 6
-          break
-          case (this.totalTimeCount > 20 && this.totalTimeCount <= 22):
-          raindropSpawnDuration = 4
-          displayCategory(2)
-          break
-          case (this.totalTimeCount > 22 && this.totalTimeCount <= 40):
-          raindropSpawnDuration = 4
-          break
-          case (this.totalTimeCount > 40 && this.totalTimeCount <= 42):
-          raindropSpawnDuration = 4
-          displayBrace()
-          break
-          case (this.totalTimeCount > 42 && this.totalTimeCount<= 44):
-          raindropSpawnDuration = 4
-          break
-          case (this.totalTimeCount > 44 && this.totalTimeCount <= 46):
-          raindropSpawnDuration = 3
-          displayCategory(1)
-          break
-          case (this.totalTimeCount > 46):
-          raindropSpawnDuration = 2
-          break
-          default:
-          raindropSpawnDuration = 20
-        }
-      }
-    },
-    checkPause: function () {
-      if (this.pause) {
-        $(document).on('keydown', function (e) {
-          if(e.keyCode == 32) {
-            this.pause = false
-          }
-        }.bind(this))
-      }
-      else {
-        $(document).on('keydown', function (e) {
-          if(e.keyCode == 32) {
-            this.pause = true
-          }
-        }.bind(this))
-      }
-      // this.activatePauseFrame()
-    },
-    checkGameOver: function () {
-      if (characterArr.length === 0) {
-        this.gameOver = true
-        displayGameOver()
-        raindropSpawnDuration = 20
-      }
-      // document.location.reload()
-    }
+    imageFormat: '\.jpg'
   }
 
-  var offsetPercent = 0.97
+  var timerId = 0
+  var totalTimeCount = 0
+  var second = 0
+  var minute = 0
+  var pause = false
+  var gameOver = false
   var characterArr = []
 
   var raindropSpawnDuration = 20
@@ -149,24 +57,26 @@ $(document).ready(function () {
 
   var cat = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
   characterArr.push(cat)
+  // var mouse = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
+  // characterArr.push(mouse)
 
   function spawnRaindrops () {
-    if (raindropSpawnTimer <= 0) {
+    if (raindropsArr.length === 0) {
+      this.raindrop = new Raindrops
+      raindropsArr.push(this.raindrop)
+    }
+    else if (raindropSpawnTimer <= 0) {
       this.raindrop = new Raindrops
       raindropsArr.push(this.raindrop)
       raindropSpawnTimer = raindropSpawnDuration
     }
-    else if (raindropsArr.length === 0) {
-      this.raindrop = new Raindrops
-      raindropsArr.push(this.raindrop)
-    }
-    raindropSpawnTimer--
+    raindropSpawnTimer-- //SHIFT THIS TO UPDATETIME FOR ACCURATE COUNT
   }
   function checkRaindrops () {
     raindropsArr.forEach(function (raindrop, i) {
       createFrame(raindrop)
       raindrop.collisionDetection()
-      raindrop.faceOrientation()
+      raindrop.faceOrientation() //CHANGE!
       raindrop.move()
       if (raindrop.collided) {
         if (raindrop.raindropRemovalTime === 0) {
@@ -330,23 +240,23 @@ $(document).ready(function () {
     }
     // console.log(this.selectedFrame)
   }
-  Character.prototype.resize = function () {
-    this.width = this.sizePercent * canvasTag.width
-    this.height = this.width //need to adjust to % of canvas
-    // this.posX = (canvasTag.width - this.width) / 2
-    this.posY = this.posYOffsetPercent * canvasTag.height - this.height
-  }
+  // Character.prototype.resize = function () {
+  //   this.width = this.sizePercent * canvasTag.width
+  //   this.height = this.width //need to adjust to % of canvas
+  //   // this.posX = (canvasTag.width - this.width) / 2
+  //   this.posY = this.posYOffsetPercent * canvasTag.height - this.height
+  // }
 
   function createFrame(item) {
     var image = new Image()
     image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
     ctx.drawImage(image, item.posX, item.posY, item.width, item.height)
   }
-
   function displayTime() {
     ctx.font = "40px Arial"
     ctx.fillStyle = "#716969"
-    ctx.fillText(gameEnvironment.minute + " : " + gameEnvironment.second, (0.46 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.fillText(minute + " : " + second, (0.46 * canvasTag.width), (0.05 * canvasTag.height))
+    // ctx.fillText(gameEnvironment.minute + " : " + gameEnvironment.second, (0.46 * canvasTag.width), (0.05 * canvasTag.height))
   }
   function displayCatLives() {
     ctx.font = "32px Arial"
@@ -383,71 +293,182 @@ $(document).ready(function () {
     ctx.font = "72px Arial"
     ctx.fillStyle = "#716969"
     ctx.fillText("Game Over", (0.37 * canvasTag.width), (0.4 * canvasTag.height))
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#2D2E2E"
+    ctx.fillText("Press Space to Restart", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+  }
+  // function resize() {
+  //   $('#gameCanvas')[0].width = window.innerWidth
+  //   $('#gameCanvas')[0].height = window.innerHeight
+  //   cat.resize()
+  // }
+
+  function twoDigit (digit) {
+    return (digit < 10) ? '0' + digit.toString() : digit.toString()
+  }
+  function updateTime() {
+    totalTimeCount++
+    if (!gameOver && !pause) {
+      second = twoDigit(Math.floor(totalTimeCount % 60))
+      minute = twoDigit(Math.floor(totalTimeCount / 60))
+    }
+  }
+  function startTimer () {
+    timerId = setInterval(updateTime, 1000)
+  }
+  function pauseTimer () {
+    clearInterval(timerId)
   }
 
-  function resize() {
-    $('#gameCanvas')[0].width = window.innerWidth
-    $('#gameCanvas')[0].height = window.innerHeight
-    cat.resize()
+  function controlStages () {
+    if (!gameOver) {
+      switch(true) {
+        case (totalTimeCount > 0 && totalTimeCount <= 2):
+        raindropSpawnDuration = 12
+        displayCategory(5)
+        displayPauseInstructions()
+        break
+        case (totalTimeCount > 2 && totalTimeCount <= 5):
+        raindropSpawnDuration = 12
+        break
+        case (totalTimeCount > 5 && totalTimeCount <= 7):
+        raindropSpawnDuration = 8
+        displayCategory(4)
+        break
+        case (totalTimeCount > 7 && totalTimeCount <= 10):
+        raindropSpawnDuration = 8
+        break
+        case (totalTimeCount > 10 && totalTimeCount <= 12):
+        raindropSpawnDuration = 6
+        displayCategory(3)
+        break
+        case (totalTimeCount > 12 && totalTimeCount <= 20):
+        raindropSpawnDuration = 6
+        break
+        case (totalTimeCount > 20 && totalTimeCount <= 22):
+        raindropSpawnDuration = 4
+        displayCategory(2)
+        break
+        case (totalTimeCount > 22 && totalTimeCount <= 40):
+        raindropSpawnDuration = 4
+        break
+        case (totalTimeCount > 40 && totalTimeCount <= 42):
+        raindropSpawnDuration = 4
+        displayBrace()
+        break
+        case (totalTimeCount > 42 && totalTimeCount<= 44):
+        raindropSpawnDuration = 4
+        break
+        case (totalTimeCount > 44 && totalTimeCount <= 46):
+        raindropSpawnDuration = 3
+        displayCategory(1)
+        break
+        case (totalTimeCount > 46 && totalTimeCount <= 50):
+        raindropSpawnDuration = 3
+        break
+        case (totalTimeCount > 50):
+        raindropSpawnDuration = 2
+        break
+        default:
+        raindropSpawnDuration = 20
+      }
+    }
   }
 
-  // var id = 0
-  // var count = 0
-  // function updateTime() {
-  //   count++
-  //   console.log(count)
-  // }
-  // function startTimer() {
-  //   id = setInterval(updateTime, 1000)
-  // }
-  // function pauseTimer() {
-  //   clearInterval(id)
-  // }
-  // // window.addEventListener('focus', gameEnvironment.updateTime)
-  // window.addEventListener('blur', pauseTimer)
-  // startTimer()
-  // // pauseTimer()
-
-  function pause() {
+  function activatePause () {
+    if (!gameOver) {
+      pause = true
+    }
+  }
+  function pauseToggle () {
+    if (!gameOver) {
+      if (pause) {
+        $(document).on('keydown', function (e) {
+          if(e.keyCode == 32) {
+            pause = false
+          }
+        }.bind(this))
+      }
+      else {
+        $(document).on('keydown', function (e) {
+          if(e.keyCode == 32) {
+            pause = true
+          }
+        }.bind(this))
+      }
+    }
+  }
+  function pauseCanvas() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
+    pauseToggle()
     displayPause()
-    drawCharacter()
-    gameEnvironment.checkPause()
     displayTime()
-    if (gameEnvironment.pause) {
-      requestAnimationFrame(pause)
+    drawCharacter()
+    if (pause) {
+      requestAnimationFrame(pauseCanvas)
     }
     else {
-      gameEnvironment.startTimer()
-      requestAnimationFrame(run)
+      startTimer()
+      requestAnimationFrame(runCanvas)
     }
   }
+  $(window).on('blur', activatePause)
 
-  function run() {
+  function runCanvas() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
-    // resize() // use listener
     createFrame(gameEnvironment)
+    cat.control()
+    pauseToggle()
+    checkGameOver()
+    controlStages()
     spawnRaindrops()
     checkRaindrops()
-    cat.control()
-    drawCharacter()
     checkCharacterLives()
-    gameEnvironment.controlStages()
-    gameEnvironment.checkPause()
-    gameEnvironment.checkGameOver()
     displayTime()
-    if (gameEnvironment.pause) {
-      gameEnvironment.pauseTimer()
-      requestAnimationFrame(pause)
+    drawCharacter()
+    if (gameOver) {
+      raindropSpawnDuration = 20
+      requestAnimationFrame(runGameOverCanvas)
+    }
+    else if (pause) {
+      pauseTimer()
+      requestAnimationFrame(pauseCanvas)
     }
     else {
-      requestAnimationFrame(run)
+      requestAnimationFrame(runCanvas)
     }
-    // console.log(gameEnvironment.totalTimeCount, cat.selectedFrame)
   }
-  run()
-  // setInterval(run,10)
-  gameEnvironment.startTimer()
 
+  function checkGameOver () {
+    if (characterArr.length === 0) {
+      gameOver = true
+    }
+  }
+  function runGameOverCanvas () {
+    createFrame(gameEnvironment)
+    displayGameOver()
+    checkRestart()
+    spawnRaindrops()
+    checkRaindrops()
+    displayTime()
+    drawCharacter()
+    requestAnimationFrame(runGameOverCanvas)
+  }
+  function checkRestart () {
+    $(document).on('keydown', function (e) {
+      if(e.keyCode == 32) {
+        activateRestart()
+      }
+    }.bind(this))
+  }
+  function activateRestart () {
+    document.location.reload()
+    ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
+    startTimer() //
+    runCanvas() //
+  }
+
+  startTimer()
+  runCanvas()
 })
