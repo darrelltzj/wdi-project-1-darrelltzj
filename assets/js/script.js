@@ -12,10 +12,11 @@
 // stop animation when key is not pressed - OK
 // rain frequency stages - check game over - OK
 
-// pause function - save and restore
-// restart & initialize options - if else in run function - gameover window and run window
-// mouse control
-// event listener for switch screen
+// pause function - save and restore - check when game Over
+// restart options
+// initialize options - if else in run function - gameover window and run window
+// mouse control // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project
+// event listener for switch screen - requestAnimationFrame() continues to run
 // event listener for resize
 // mouse Character & collision (2 player)
 // Create sprite - mouse
@@ -111,7 +112,7 @@ $(document).ready(function () {
         }
       }
     },
-    checkPause: function() {
+    checkPause: function () {
       if (this.pause) {
         $(document).on('keydown', function (e) {
           if(e.keyCode == 32) {
@@ -127,6 +128,14 @@ $(document).ready(function () {
         }.bind(this))
       }
       // this.activatePauseFrame()
+    },
+    checkGameOver: function () {
+      if (characterArr.length === 0) {
+        this.gameOver = true
+        displayGameOver()
+        raindropSpawnDuration = 20
+      }
+      // document.location.reload()
     }
   }
 
@@ -295,26 +304,9 @@ $(document).ready(function () {
   Character.prototype.faceOrientation = function () {
     if (this.faceRight) {
       this.orientation = 0
-
-      // if (this.selectedFrame >= this.reverseFrameIndex) {
-      //   this.selectedFrame = 0
-      // }
-      // else {
-      //   this.selectedFrame += 1
-      // }
     }
     else if (!this.faceRight) {
       this.orientation = 1
-
-      // if (this.selectedFrame < this.reverseFrameIndex) {
-      //   this.selectedFrame = this.reverseFrameIndex
-      // }
-      // if (this.selectedFrame === this.frames.length - 1 || this.selectedFrame <= this.reverseFrameIndex - 1) {
-      //   this.selectedFrame = this.reverseFrameIndex
-      // }
-      // else {
-      //   this.selectedFrame += 1
-      // }
     }
     this.imageFolder = this.mainImageFolder + '\/' + this.orientation
   }
@@ -345,19 +337,10 @@ $(document).ready(function () {
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
   }
 
-  function isGameOver() {
-    if (characterArr.length === 0) {
-      gameEnvironment.gameOver = true
-      displayGameOver()
-      raindropSpawnDuration = 20
-    }
-    // document.location.reload()
-  }
-
   function createFrame(item) {
-    this.image = new Image()
-    this.image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
-    ctx.drawImage(this.image, item.posX, item.posY, item.width, item.height)
+    var image = new Image()
+    image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
+    ctx.drawImage(image, item.posX, item.posY, item.width, item.height)
   }
 
   function displayTime() {
@@ -408,6 +391,23 @@ $(document).ready(function () {
     cat.resize()
   }
 
+  // var id = 0
+  // var count = 0
+  // function updateTime() {
+  //   count++
+  //   console.log(count)
+  // }
+  // function startTimer() {
+  //   id = setInterval(updateTime, 1000)
+  // }
+  // function pauseTimer() {
+  //   clearInterval(id)
+  // }
+  // // window.addEventListener('focus', gameEnvironment.updateTime)
+  // window.addEventListener('blur', pauseTimer)
+  // startTimer()
+  // // pauseTimer()
+
   function pause() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
@@ -435,7 +435,7 @@ $(document).ready(function () {
     checkCharacterLives()
     gameEnvironment.controlStages()
     gameEnvironment.checkPause()
-    isGameOver()
+    gameEnvironment.checkGameOver()
     displayTime()
     if (gameEnvironment.pause) {
       gameEnvironment.pauseTimer()
@@ -449,4 +449,5 @@ $(document).ready(function () {
   run()
   // setInterval(run,10)
   gameEnvironment.startTimer()
+
 })
