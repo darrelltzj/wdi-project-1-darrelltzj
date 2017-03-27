@@ -11,18 +11,19 @@
 // - activate faceOrientation even if key is not pressed: press --> image roll 1-last-1 - OK
 // stop animation when key is not pressed - OK
 // rain frequency stages - check game over - OK
+// pause function - save and restore - check when game Over - OK
+// restart - OK
 
-// pause function - save and restore - check when game Over
-// restart options
 // initialize options - if else in runCanvas function - gameover window and runCanvas window
-// mouse control // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
-// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/
+// mouse control
 // event listener for resize
 // mouse Character & collision (2 player)
 // Create sprite - mouse
 // font
 // AI
 // wind
+// Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
+// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
@@ -273,16 +274,13 @@ $(document).ready(function () {
     ctx.fillStyle = "#716969"
     ctx.fillText("Get Ready", (0.37 * canvasTag.width), (0.4 * canvasTag.height))
   }
-  function displayPauseInstructions() {
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#2D2E2E"
-    ctx.fillText("Press Space to Pause", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
-  }
   function displayPause() {
     ctx.font = "72px Arial"
     ctx.fillStyle = "#716969"
     ctx.fillText("Game Paused", (0.35 * canvasTag.width), (0.4 * canvasTag.height))
-    displayResumeInstructions()
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#2D2E2E"
+    ctx.fillText("Press Space to Pause", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
   }
   function displayResumeInstructions() {
     ctx.font = "16px Arial"
@@ -326,7 +324,6 @@ $(document).ready(function () {
         case (totalTimeCount > 0 && totalTimeCount <= 2):
         raindropSpawnDuration = 12
         displayCategory(5)
-        displayPauseInstructions()
         break
         case (totalTimeCount > 2 && totalTimeCount <= 5):
         raindropSpawnDuration = 12
@@ -464,9 +461,6 @@ $(document).ready(function () {
   }
   function activateRestart () {
     document.location.reload()
-    ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
-    startTimer() //
-    runCanvas() //
   }
 
   startTimer()
