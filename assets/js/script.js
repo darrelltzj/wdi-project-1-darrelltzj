@@ -10,9 +10,9 @@
 // - activate faceOrientation even if key is not pressed: press --> image roll 1-last-1 - OK
 // stop animation when key is not pressed - OK
 
-// rain frequency stages
-// pause function
-// restart & initialize options
+// rain frequency stages - check game over - OK
+// pause function - save and restore
+// restart & initialize options - if else in run function - gameover window and run window
 // event listener for resize
 // mouse Character & collision (2 player)
 // Create sprite - mouse
@@ -53,43 +53,57 @@ $(document).ready(function () {
       this.timerId = setInterval(this.updateTime.bind(this), 1000)
     },
     controlStages: function () {
-      switch(true) {
-        case (this.second > 5 && this.second <= 10):
-        raindropSpawnDuration = 19
-        break;
-        case (this.second > 10 && this.second <= 15):
-        raindropSpawnDuration = 17
-        break;
-        case (this.second > 15 && this.second <= 20):
-        raindropSpawnDuration = 14
-        break;
-        case (this.second > 20 && this.second <= 25):
-        raindropSpawnDuration = 10
-        break;
-        case (this.second > 25 && this.second <= 30):
-        raindropSpawnDuration = 5
-        break;
-        case (this.second > 30 && this.second <= 40):
-        raindropSpawnDuration = 3
-        break;
-        case (this.second > 40 && this.second <= 50):
-        raindropSpawnDuration = 2
-        break;
-        case (this.second > 50 && this.second <= 55):
-        raindropSpawnDuration = 1
-        break;
-        case (this.second > 55 && this.second <= 60):
-        raindropSpawnDuration = 0.5
-        break;
-        case (this.second > 60):
-        raindropSpawnDuration = 0.1
-        break;
-        default:
-        raindropSpawnDuration = 20
+      if (!this.gameOver) {
+        switch(true) {
+          case (this.totalTimeCount > 0 && this.totalTimeCount <= 2):
+          raindropSpawnDuration = 12
+          displayCategory(5)
+          break
+          case (this.totalTimeCount > 2 && this.totalTimeCount <= 5):
+          raindropSpawnDuration = 12
+          break
+          case (this.totalTimeCount > 5 && this.totalTimeCount <= 7):
+          raindropSpawnDuration = 8
+          displayCategory(4)
+          break
+          case (this.totalTimeCount > 7 && this.totalTimeCount <= 10):
+          raindropSpawnDuration = 8
+          break
+          case (this.totalTimeCount > 10 && this.totalTimeCount <= 12):
+          raindropSpawnDuration = 6
+          displayCategory(3)
+          break
+          case (this.totalTimeCount > 12 && this.totalTimeCount <= 20):
+          raindropSpawnDuration = 6
+          break
+          case (this.totalTimeCount > 20 && this.totalTimeCount <= 22):
+          raindropSpawnDuration = 4
+          displayCategory(2)
+          break
+          case (this.totalTimeCount > 22 && this.totalTimeCount <= 40):
+          raindropSpawnDuration = 4
+          break
+          case (this.totalTimeCount > 40 && this.totalTimeCount <= 42):
+          raindropSpawnDuration = 4
+          displayBrace()
+          break
+          case (this.totalTimeCount > 42 && this.totalTimeCount<= 44):
+          raindropSpawnDuration = 4
+          break
+          case (this.totalTimeCount > 44 && this.totalTimeCount <= 46):
+          raindropSpawnDuration = 3
+          displayCategory(1)
+          break
+          case (this.totalTimeCount > 46):
+          raindropSpawnDuration = 2
+          break
+          default:
+          raindropSpawnDuration = 20
+          }
+        }
       }
-      console.log(raindropSpawnDuration)
     }
-  }
+
   var offsetPercent = 0.97
   var characterArr = []
 
@@ -198,7 +212,7 @@ $(document).ready(function () {
     this.posYOffsetPercent = posYOffsetPercent
 
     this.width = this.sizePercent * canvasTag.width
-    this.height = (342 / 575) * this.width //need to adjust to % of canvas
+    this.height = (342 / 575) * this.width //need to adjust to % of canvas?
     this.posX = (canvasTag.width - this.width) / 2
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
 
@@ -309,7 +323,7 @@ $(document).ready(function () {
     if (characterArr.length === 0) {
       gameEnvironment.gameOver = true
       displayGameOver()
-      raindropSpawnDuration = 100
+      raindropSpawnDuration = 20
     }
     // document.location.reload()
   }
@@ -329,6 +343,16 @@ $(document).ready(function () {
     ctx.font = "32px Arial"
     ctx.fillStyle = "#716969"
     ctx.fillText("Cat\'s Lives: " + cat.lives, (0.01 * canvasTag.width), (0.05 * canvasTag.height))
+  }
+  function displayCategory(category) {
+    ctx.font = "72px Arial"
+    ctx.fillStyle = "#716969"
+    ctx.fillText("Category " + category, (0.37 * canvasTag.width), (0.4 * canvasTag.height))
+  }
+  function displayBrace() {
+    ctx.font = "72px Arial"
+    ctx.fillStyle = "#716969"
+    ctx.fillText("Get Ready", (0.37 * canvasTag.width), (0.4 * canvasTag.height))
   }
   function displayGameOver() {
     ctx.font = "72px Arial"
@@ -351,9 +375,9 @@ $(document).ready(function () {
     cat.control()
     drawCharacter()
     checkCharacterLives()
+    gameEnvironment.controlStages()
     isGameOver()
     displayTime()
-    gameEnvironment.controlStages()
     requestAnimationFrame(run)
     // console.log(gameEnvironment.totalTimeCount, cat.selectedFrame)
   }
