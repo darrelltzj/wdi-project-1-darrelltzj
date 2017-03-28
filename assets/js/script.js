@@ -14,14 +14,15 @@
 // pause function - save and restore - check when game Over - OK
 // restart - OK
 // Hit indicator --OK
-// mouse playerControl & wasd --OK
+// cat2 playerControl & wasd --OK
 
+// live display name
 // initialize options - if else in runCanvas function - gameover window and runCanvas window
-// mouse Character
-// Create sprite - mouse
-// collision (2 player)
 // event listener for resize
 // font
+// mouse Character - go through wall
+// Create sprite - cat2
+// collision (2 player)
 
 // catch raindrops?
 // AI?
@@ -61,10 +62,17 @@ $(document).ready(function () {
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
+  var indicatorTimer = 15
+  var activateIndicator = false
+  var indicatorX = 0
+  var indicatorY = 0
+
   //control - mouse 0, left right 1, WASD 2
   var cat = new Character(0.11, (0.8 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 1) //var control
   // characterArr.push(cat)
-  var mouse = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 2) //var control
+  var cat2 = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 2) //var control
+
+  var singlePlayer = true
 
   function spawnRaindrops () {
     if (raindropsArr.length === 0) {
@@ -159,8 +167,13 @@ $(document).ready(function () {
     characterArr.forEach(function (character) {
       createFrame(character)
     })
-    displayCatLives()
-    displayMouseLives()
+    if (characterArr.length === 1) {
+      displayCatLives()
+    }
+    else if (characterArr.length === 2) {
+      displayCatLives()
+      displayMouseLives()
+    }
   }
   function Character(sizePercent, posX, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl) {
     this.sizePercent = sizePercent
@@ -299,10 +312,6 @@ $(document).ready(function () {
   //   this.posY = this.posYOffsetPercent * canvasTag.height - this.height
   // }
 
-  var indicatorTimer = 15
-  var activateIndicator = false
-  var indicatorX = 0
-  var indicatorY = 0
   function createFrame(item) {
     var image = new Image()
     image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
@@ -327,12 +336,12 @@ $(document).ready(function () {
   function displayCatLives() {
     ctx.font = "32px Arial"
     ctx.fillStyle = "#716969"
-    ctx.fillText("Cat\'s Lives: " + cat.lives, (0.85 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.fillText("Player One:  " + cat.lives, (0.85 * canvasTag.width), (0.05 * canvasTag.height))
   }
   function displayMouseLives() {
     ctx.font = "32px Arial"
     ctx.fillStyle = "#716969"
-    ctx.fillText("Mouse\'s Lives: " + mouse.lives, (0.01 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.fillText("Player Two:  " + cat2.lives, (0.01 * canvasTag.width), (0.05 * canvasTag.height))
   }
   function displayCategory(category) {
     ctx.font = "72px Arial"
@@ -347,7 +356,7 @@ $(document).ready(function () {
   function displayPause() {
     ctx.font = "72px Arial"
     ctx.fillStyle = "#716969"
-    ctx.fillText("Game Paused", (0.35 * canvasTag.width), (0.4 * canvasTag.height))
+    ctx.fillText("Game Paused", (0.34 * canvasTag.width), (0.4 * canvasTag.height))
     ctx.font = "16px Arial"
     ctx.fillStyle = "#2D2E2E"
     ctx.fillText("Press Space to Pause", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
@@ -506,7 +515,7 @@ $(document).ready(function () {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
     cat.control()
-    mouse.control()
+    cat2.control()
     pauseToggle()
     checkGameOver()
     controlStages()
@@ -559,7 +568,6 @@ $(document).ready(function () {
     }
   }
 
-  var singlePlayer = true
   function checkStart() {
     $(document).on('keydown', function (e) {
       if(e.keyCode == 32 && gameOver) {
@@ -593,7 +601,7 @@ $(document).ready(function () {
     }
     else if (!singlePlayer) {
       characterArr.push(cat)
-      characterArr.push(mouse)
+      characterArr.push(cat2)
     }
   }
   function initialize() {
