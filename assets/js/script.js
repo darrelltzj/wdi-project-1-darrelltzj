@@ -18,8 +18,8 @@
 // cat2 playerControl & wasd --OK
 // live display name --OK
 // initialize options - if else in runCanvas function - gameover window and runCanvas window --OK
+// Create sprite - cat2 --OK?
 
-// Create sprite - cat2
 // event listener for resize
 // font
 // collision (2 player)
@@ -71,9 +71,9 @@ $(document).ready(function () {
   var playerTwoControl = 2
 
   //control - mouse 0, left right 1, WASD 2
-  var cat = new Character(0.11, (0.8 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, playerOneControl) //var control
+  var cat = new Character(0.11, (0.8 * canvasTag.width), (342 / 575), offsetPercent, 'cat', '\.png', 8, 4, playerOneControl)
   // characterArr.push(cat)
-  var cat2 = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, playerTwoControl) //var control
+  var cat2 = new Character(0.11, (0.1 * canvasTag.width), (342 / 575), offsetPercent, 'cat2', '\.png', 8, 4, playerTwoControl)
 
   function spawnRaindrops () {
     if (raindropsArr.length === 0) {
@@ -176,12 +176,12 @@ $(document).ready(function () {
       displayMouseLives()
     }
   }
-  function Character(sizePercent, posX, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl) {
+  function Character(sizePercent, posX, heightWidthRatio, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl) {
     this.sizePercent = sizePercent
     this.posYOffsetPercent = posYOffsetPercent
 
     this.width = this.sizePercent * canvasTag.width
-    this.height = (342 / 575) * this.width //need to adjust to % of canvas?
+    this.height = heightWidthRatio * this.width
     this.posX = posX
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
 
@@ -191,7 +191,7 @@ $(document).ready(function () {
     this.imageFormat = imageFormat
     this.frameLength = frameLength
     this.imageFolder = this.mainImageFolder + '\/' + this.orientation
-    this.frameChangeDelay = this.frameLength / 2
+    this.frameChangeDelay = Math.floor(32 / this.frameLength) //32
 
     this.faceRight = true
     this.velocity = velocity
@@ -308,6 +308,7 @@ $(document).ready(function () {
     }
     else {
       this.frameChangeDelay--
+      console.log(this.selectedFrame)
     }
     // console.log(this.selectedFrame)
   }
