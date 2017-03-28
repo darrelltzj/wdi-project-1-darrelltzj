@@ -139,6 +139,9 @@ $(document).ready(function () {
           this.collided = true
           this.posY = character.posY - this.height
           character.lives--
+          indicatorX = this.posX
+          indicatorY = this.posY - (this.height)
+          activateIndicator = true
         }
       }.bind(this))
     }
@@ -252,16 +255,30 @@ $(document).ready(function () {
   //   this.posY = this.posYOffsetPercent * canvasTag.height - this.height
   // }
 
+  var indicatorTimer = 15
+  var activateIndicator = false
+  var indicatorX = 0
+  var indicatorY = 0
   function createFrame(item) {
     var image = new Image()
     image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
     ctx.drawImage(image, item.posX, item.posY, item.width, item.height)
   }
+  function displayHit(posX, posY) {
+    if (indicatorTimer === 0) {
+      activateIndicator = false
+      indicatorTimer = 15
+    }
+    else if (activateIndicator) {
+      ctx.font = "72px Arial"
+      ctx.fillStyle = "#716969"
+      ctx.fillText("-1", posX, posY)
+    }
+  }
   function displayTime() {
     ctx.font = "40px Arial"
     ctx.fillStyle = "#716969"
     ctx.fillText(minute + " : " + second, (0.46 * canvasTag.width), (0.05 * canvasTag.height))
-    // ctx.fillText(gameEnvironment.minute + " : " + gameEnvironment.second, (0.46 * canvasTag.width), (0.05 * canvasTag.height))
   }
   function displayCatLives() {
     ctx.font = "32px Arial"
@@ -430,6 +447,10 @@ $(document).ready(function () {
     checkCharacterLives()
     displayTime()
     drawCharacter()
+    if (activateIndicator) {
+      displayHit(indicatorX,indicatorY)
+      indicatorTimer--
+    }
     if (gameOver) {
       raindropSpawnDuration = 20
       requestAnimationFrame(runGameOverCanvas)
