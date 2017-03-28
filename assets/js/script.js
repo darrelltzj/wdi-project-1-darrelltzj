@@ -13,11 +13,12 @@
 // rain frequency stages - check game over - OK
 // pause function - save and restore - check when game Over - OK
 // restart - OK
-// !!! when hit - OK
 
+// Hit indicator
 // mouse control & wasd
 // mouse Character
 // initialize options - if else in runCanvas function - gameover window and runCanvas window
+
 // Create sprite - mouse
 // collision (2 player)
 // catch raindrops
@@ -26,7 +27,7 @@
 // AI?
 // wind?
 // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
-// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/ //Partly Cloudy And Raining by Per from the Noun Project // rain cloud by Per from the Noun Project // storm cloud by Per from the Noun Project //hailstorm by Demograph™ from the Noun Project
+// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
@@ -51,7 +52,7 @@ $(document).ready(function () {
   var second = 0
   var minute = 0
   var pause = false
-  var gameOver = false
+  var gameOver = true
   var characterArr = []
 
   var raindropSpawnDuration = 20
@@ -59,7 +60,7 @@ $(document).ready(function () {
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
-  var cat = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 4)
+  var cat = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
   characterArr.push(cat)
   // var mouse = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
   // characterArr.push(mouse)
@@ -138,8 +139,6 @@ $(document).ready(function () {
           this.collided = true
           this.posY = character.posY - this.height
           character.lives--
-          displayHit(this.posX - (this.width / 2), character.posY - (character.height / 2))
-          activateIndicator = true
         }
       }.bind(this))
     }
@@ -173,7 +172,7 @@ $(document).ready(function () {
     this.imageFormat = imageFormat
     this.frameLength = frameLength
     this.imageFolder = this.mainImageFolder + '\/' + this.orientation
-    this.frameChangeDelay = Math.floor(32 / this.frameLength) //32
+    this.frameChangeDelay = this.frameLength / 2
 
     this.faceRight = true
     this.velocity = velocity
@@ -258,24 +257,6 @@ $(document).ready(function () {
     image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
     ctx.drawImage(image, item.posX, item.posY, item.width, item.height)
   }
-
-  var activateIndicator = false
-  var indicatorTimer = 50
-  var indicatorX = 0
-  var indicatorY = 0
-  function displayHit(posX, posY) {
-    indicatorX = posX
-    indicatorY = posY
-    if (indicatorTimer <= 0) {
-      indicatorTimer = 50
-      activateIndicator = false
-    }
-    else if (activateIndicator) {
-      ctx.font = "72px Arial"
-      ctx.fillStyle = "#716969"
-      ctx.fillText("-1", posX, posY)
-    }
-  }
   function displayTime() {
     ctx.font = "40px Arial"
     ctx.fillStyle = "#716969"
@@ -291,9 +272,6 @@ $(document).ready(function () {
     ctx.font = "72px Arial"
     ctx.fillStyle = "#716969"
     ctx.fillText("Category " + category, (0.37 * canvasTag.width), (0.4 * canvasTag.height))
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#2D2E2E"
-    ctx.fillText("Press Space to Pause", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
   }
   function displayBrace() {
     ctx.font = "72px Arial"
@@ -304,6 +282,11 @@ $(document).ready(function () {
     ctx.font = "72px Arial"
     ctx.fillStyle = "#716969"
     ctx.fillText("Game Paused", (0.35 * canvasTag.width), (0.4 * canvasTag.height))
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#2D2E2E"
+    ctx.fillText("Press Space to Pause", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+  }
+  function displayResumeInstructions() {
     ctx.font = "16px Arial"
     ctx.fillStyle = "#2D2E2E"
     ctx.fillText("Press Space to Resume", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
@@ -326,8 +309,8 @@ $(document).ready(function () {
     return (digit < 10) ? '0' + digit.toString() : digit.toString()
   }
   function updateTime() {
-    totalTimeCount++
     if (!gameOver && !pause) {
+      totalTimeCount++
       second = twoDigit(Math.floor(totalTimeCount % 60))
       minute = twoDigit(Math.floor(totalTimeCount / 60))
     }
@@ -336,7 +319,9 @@ $(document).ready(function () {
     timerId = setInterval(updateTime, 1000)
   }
   function pauseTimer () {
-    clearInterval(timerId)
+    if (pause) {
+      clearInterval(timerId)
+    }
   }
 
   function controlStages () {
@@ -445,10 +430,6 @@ $(document).ready(function () {
     checkCharacterLives()
     displayTime()
     drawCharacter()
-    if (activateIndicator) {
-      displayHit(indicatorX, indicatorY)
-      indicatorTimer--
-    }
     if (gameOver) {
       raindropSpawnDuration = 20
       requestAnimationFrame(runGameOverCanvas)
@@ -468,6 +449,7 @@ $(document).ready(function () {
     }
   }
   function runGameOverCanvas () {
+    ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
     displayGameOver()
     checkRestart()
@@ -477,9 +459,10 @@ $(document).ready(function () {
     drawCharacter()
     requestAnimationFrame(runGameOverCanvas)
   }
+
   function checkRestart () {
     $(document).on('keydown', function (e) {
-      if(e.keyCode == 32) {
+      if(e.keyCode == 32 && gameOver) {
         activateRestart()
       }
     }.bind(this))
@@ -490,7 +473,8 @@ $(document).ready(function () {
 
   function initialize() {
     $(document).on('keydown', function (e) {
-      if(e.keyCode == 32) {
+      if(e.keyCode == 32 && gameOver) {
+        gameOver = false
         startTimer()
         runCanvas()
       }
