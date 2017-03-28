@@ -60,7 +60,7 @@ $(document).ready(function () {
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
-  var cat = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
+  var cat = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 4)
   characterArr.push(cat)
   // var mouse = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
   // characterArr.push(mouse)
@@ -241,7 +241,7 @@ $(document).ready(function () {
       else {
         this.selectedFrame++
       }
-      this.frameChangeDelay = this.frameLength / 2
+      this.frameChangeDelay = Math.floor(24 / this.frameLength) //32
     }
     else {
       this.frameChangeDelay--
@@ -315,6 +315,14 @@ $(document).ready(function () {
     ctx.font = "16px Arial"
     ctx.fillStyle = "#2D2E2E"
     ctx.fillText("Press Space to Restart", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+  }
+  function displayStart() {
+    ctx.font = "72px Arial"
+    ctx.fillStyle = "#716969"
+    ctx.fillText("Avoid the Raindrops", (0.3 * canvasTag.width), (0.4 * canvasTag.height))
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#2D2E2E"
+    ctx.fillText("Press Space to Start", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
   }
   // function resize() {
   //   $('#gameCanvas')[0].width = window.innerWidth
@@ -493,6 +501,9 @@ $(document).ready(function () {
   }
 
   function initialize() {
+    ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
+    createFrame(gameEnvironment)
+    displayStart()
     $(document).on('keydown', function (e) {
       if(e.keyCode == 32 && gameOver) {
         gameOver = false

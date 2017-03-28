@@ -5,34 +5,11 @@
 
 .container {
   background-image: url('/assets/img/background/0.jpg');
-  margin: 0 auto;
-  /*max-width: 800px;*/
   width:100%;
   position: relative;
-  display: flex;
-  /*align-items: center*/
-}
-
-/*h1 {
-  font: 72px Arial;
-  color:#716969;
-  align-self: center;
-  position: absolute;
-  z-index: 2;
-}*/
-
-p {
-  font: 72px Arial;
-  color:#716969;
-  /*align-self: center;*/
-  /*position: absolute;*/
-  z-index: 1;
 }
 
 canvas {
-  /*background-color: black;*/
-  /*background-image: url('/assets/img/background/0.jpg');*/
+  background-image: url('/assets/img/background/0.jpg');
   position: absolute;
-  margin: 0 auto;
-  z-index: 2;
 }
