@@ -15,14 +15,16 @@
 // restart - OK
 // !!! when hit - OK
 
+// mouse control & wasd
+// mouse Character
 // initialize options - if else in runCanvas function - gameover window and runCanvas window
-// mouse control
-// mouse Character & collision (2 player)
 // Create sprite - mouse
+// collision (2 player)
+// catch raindrops
 // event listener for resize
 // font
-// AI
-// wind
+// AI?
+// wind?
 // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
 // event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/ //Partly Cloudy And Raining by Per from the Noun Project // rain cloud by Per from the Noun Project // storm cloud by Per from the Noun Project //hailstorm by Demograph™ from the Noun Project
 
@@ -486,6 +488,13 @@ $(document).ready(function () {
     document.location.reload()
   }
 
-  startTimer()
-  runCanvas()
+  function initialize() {
+    $(document).on('keydown', function (e) {
+      if(e.keyCode == 32) {
+        startTimer()
+        runCanvas()
+      }
+    }.bind(this))
+  }
+  initialize()
 })
