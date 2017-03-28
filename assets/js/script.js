@@ -12,24 +12,22 @@
 // stop animation when key is not pressed - OK
 // rain frequency stages - check game over - OK
 // pause function - save and restore - check when game Over - OK
+// event listener for switch screen - requestAnimationFrame() continues to runCanvas -OK
 // restart - OK
 // Hit indicator --OK
 // cat2 playerControl & wasd --OK
 // live display name --OK
+// initialize options - if else in runCanvas function - gameover window and runCanvas window --OK
 
-// initialize options - if else in runCanvas function - gameover window and runCanvas window
+// Create sprite - cat2
 // event listener for resize
 // font
-// mouse Character - go through wall
-// Create sprite - cat2
 // collision (2 player)
-
-// catch raindrops?
+// mouse Character - go through wall
 // AI?
 // wind?
-
 // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
-// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/ //Arrow by Numero Uno from the Noun Project
+// http://minutelabs.io/ //Arrow by Numero Uno from the Noun Project
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
@@ -67,12 +65,15 @@ $(document).ready(function () {
   var indicatorX = 0
   var indicatorY = 0
 
-  //control - mouse 0, left right 1, WASD 2
-  var cat = new Character(0.11, (0.8 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 1) //var control
-  // characterArr.push(cat)
-  var cat2 = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 2) //var control
-
+  // ---Player Selection ---
   var singlePlayer = true
+  var playerOneControl = 1
+  var playerTwoControl = 2
+
+  //control - mouse 0, left right 1, WASD 2
+  var cat = new Character(0.11, (0.8 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, playerOneControl) //var control
+  // characterArr.push(cat)
+  var cat2 = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, playerTwoControl) //var control
 
   function spawnRaindrops () {
     if (raindropsArr.length === 0) {
@@ -208,11 +209,11 @@ $(document).ready(function () {
         e.preventDefault()
         var relativeX = e.clientX - canvasTag.offsetLeft
         if(relativeX > 0 && relativeX < canvasTag.width) {
-          if ((this.posX + this.width / 2) < relativeX) {
+          if ((this.posX + this.width) < relativeX) {
             this.rightPressed = true
             this.leftPressed = false
           }
-          else if ((this.posX + this.width / 2) > relativeX) {
+          else if (this.posX > relativeX) {
             this.leftPressed = true
             this.rightPressed = false
           }
@@ -383,10 +384,10 @@ $(document).ready(function () {
   function displayStart() {
     ctx.font = '80px Arial'
     ctx.fillStyle = '#716969'
-    ctx.fillText('Avoid the Raindrops', 0.5 * (canvasTag.width - ctx.measureText('Avoid the Raindrops').width), (0.27 * canvasTag.height))
+    ctx.fillText('Avoid the Raindrops', 0.5 * (canvasTag.width - ctx.measureText('Avoid the Raindrops').width), (0.28 * canvasTag.height))
     ctx.font = '16px Arial'
     ctx.fillStyle = '#2D2E2E'
-    ctx.fillText('Press Space to Start', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Start').width), (0.41 * canvasTag.height))
+    ctx.fillText('Press Space to Start', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Start').width), (0.42 * canvasTag.height))
   }
   function displaySingle () {
     var image = new Image()
@@ -407,6 +408,16 @@ $(document).ready(function () {
     var image = new Image()
     image.src = 'assets/img/start/wasd.png'
     ctx.drawImage(image, (0.3 * canvasTag.width), (0.61 * canvasTag.height), (0.06 * canvasTag.width), (187 / 288 * 0.06 * canvasTag.width))
+  }
+  function displayMouseOne () {
+    var image = new Image()
+    image.src = 'assets/img/start/mouse.png'
+    ctx.drawImage(image, (0.63 * canvasTag.width), (0.59 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
+  }
+  function displayMouseTwo () {
+    var image = new Image()
+    image.src = 'assets/img/start/mouse.png'
+    ctx.drawImage(image, (0.3 * canvasTag.width), (0.59 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
   }
   // function resize() {
   //   $('#gameCanvas')[0].width = window.innerWidth
@@ -558,7 +569,6 @@ $(document).ready(function () {
   }
 
   function checkGameOver () {
-    console.log(characterArr)
     if (characterArr.length === 0) {
       gameOver = true
     }
@@ -601,7 +611,7 @@ $(document).ready(function () {
     if (singlePlayer) {
       $(document).on('keydown', function (e) {
         e.preventDefault()
-        if(e.keyCode == 39 || e.keyCode == 37) {
+        if(e.keyCode == 39 || e.keyCode == 37 || e.keyCode == 65 || e.keyCode == 68) {
           singlePlayer = false
         }
       })
@@ -609,17 +619,42 @@ $(document).ready(function () {
     else if (!singlePlayer) {
       $(document).on('keydown', function (e) {
         e.preventDefault()
-        if(e.keyCode == 39 || e.keyCode == 37) {
+        if(e.keyCode == 39 || e.keyCode == 37 || e.keyCode == 65 || e.keyCode == 68) {
           singlePlayer = true
         }
       })
     }
   }
+  function toggleControl () {
+    $(document).on('keydown', function (e) {
+      e.preventDefault()
+      if (e.keyCode == 38 || e.keyCode == 40) {
+        if(playerOneControl === 1) {
+          playerOneControl = 0
+          playerTwoControl = 2
+        }
+        else if (playerOneControl === 0) {
+          playerOneControl = 1
+        }
+      }
+      if (e.keyCode == 87 || e.keyCode == 83) {
+        if(playerTwoControl === 2 && playerOneControl !== 0) {
+          playerTwoControl = 0
+        }
+        else if (playerTwoControl === 0) {
+          playerTwoControl = 2
+        }
+      }
+    })
+  }
   function setPlayer () {
     if (singlePlayer) {
+      cat.playerControl = playerOneControl
       characterArr.push(cat)
     }
     else if (!singlePlayer) {
+      cat.playerControl = playerOneControl
+      cat2.playerControl = playerTwoControl
       characterArr.push(cat)
       characterArr.push(cat2)
     }
@@ -630,14 +665,33 @@ $(document).ready(function () {
     displayStart()
     checkStart()
     togglePlayer()
+    toggleControl()
     if (singlePlayer) {
       displaySingle()
-      displayArrow()
+      if (playerOneControl === 0) {
+        displayMouseOne()
+      }
+      else if (playerOneControl === 1) {
+        displayArrow()
+      }
+      // displayArrow() // if else
     }
-    else {
+    else if (!singlePlayer) {
       displayDouble()
-      displayArrow()
-      displayWasd()
+      if (playerOneControl === 0) {
+        displayMouseOne()
+      }
+      else if (playerOneControl === 1) {
+        displayArrow()
+      }
+      // displayArrow() // if else
+      if (playerTwoControl === 0) {
+        displayMouseTwo()
+      }
+      else if (playerTwoControl === 2) {
+        displayWasd()
+      }
+      // displayWasd() // if else
     }
     if (!gameOver) {
       setPlayer()
