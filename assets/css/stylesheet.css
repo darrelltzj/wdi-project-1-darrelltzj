@@ -26,13 +26,13 @@ p {
   color:#716969;
   /*align-self: center;*/
   /*position: absolute;*/
-  z-index: 2;
+  z-index: 1;
 }
 
 canvas {
-  background-color: black;
+  /*background-color: black;*/
   /*background-image: url('/assets/img/background/0.jpg');*/
   position: absolute;
   margin: 0 auto;
-  z-index: 1;
+  z-index: 2;
 }
