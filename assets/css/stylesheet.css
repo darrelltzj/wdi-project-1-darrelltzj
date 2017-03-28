@@ -4,12 +4,12 @@
 }
 
 .container {
-  /*background-image: url('/assets/img/background/0.jpg');*/
+  background-image: url('/assets/img/background/0.jpg');
   width:100%;
   /*position: relative;*/
 }
 
 canvas {
-  background-image: url('/assets/img/background/0.jpg');
+  /*background-image: url('/assets/img/background/0.jpg');*/
   /*position: absolute;*/
 }

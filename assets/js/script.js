@@ -16,18 +16,19 @@
 // Hit indicator --OK
 // mouse playerControl & wasd --OK
 
-// mouse Character
 // initialize options - if else in runCanvas function - gameover window and runCanvas window
-
+// mouse Character
 // Create sprite - mouse
 // collision (2 player)
-// catch raindrops
 // event listener for resize
 // font
+
+// catch raindrops?
 // AI?
 // wind?
+
 // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
-// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/
+// event listener for switch screen - requestAnimationFrame() continues to runCanvas // http://minutelabs.io/ //Arrow by Numero Uno from the Noun Project
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
@@ -60,10 +61,10 @@ $(document).ready(function () {
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
-  var cat = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 2) //var control
-  characterArr.push(cat)
-  var mouse = new Character(0.11, (0.8 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 0) //var control
-  characterArr.push(mouse)
+  //control - mouse 0, left right 1, WASD 2
+  var cat = new Character(0.11, (0.8 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 1) //var control
+  // characterArr.push(cat)
+  var mouse = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 2) //var control
 
   function spawnRaindrops () {
     if (raindropsArr.length === 0) {
@@ -190,25 +191,6 @@ $(document).ready(function () {
   }
   Character.prototype.control = function () {
     if (this.playerControl === 0) {
-      $(document).on('keydown', function (e) {
-        if(e.keyCode == 39) {
-          this.rightPressed = true
-        }
-        else if(e.keyCode == 37) {
-          this.leftPressed = true
-        }
-      }.bind(this))
-
-      $(document).on('keyup', function (e) {
-        if(e.keyCode == 39) {
-          this.rightPressed = false
-        }
-        else if(e.keyCode == 37) {
-          this.leftPressed = false
-        }
-      }.bind(this))
-    }
-    else if (this.playerControl === 1) {
       $(document).on('mousemove', function (e) {
         var relativeX = e.clientX - canvasTag.offsetLeft
         if(relativeX > 0 && relativeX < canvasTag.width) {
@@ -224,6 +206,25 @@ $(document).ready(function () {
             this.leftPressed = false
             this.rightPressed = false
           }
+        }
+      }.bind(this))
+    }
+    else if (this.playerControl === 1) {
+      $(document).on('keydown', function (e) {
+        if(e.keyCode == 39) {
+          this.rightPressed = true
+        }
+        else if(e.keyCode == 37) {
+          this.leftPressed = true
+        }
+      }.bind(this))
+
+      $(document).on('keyup', function (e) {
+        if(e.keyCode == 39) {
+          this.rightPressed = false
+        }
+        else if(e.keyCode == 37) {
+          this.leftPressed = false
         }
       }.bind(this))
     }
@@ -326,12 +327,12 @@ $(document).ready(function () {
   function displayCatLives() {
     ctx.font = "32px Arial"
     ctx.fillStyle = "#716969"
-    ctx.fillText("Cat\'s Lives: " + cat.lives, (0.01 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.fillText("Cat\'s Lives: " + cat.lives, (0.85 * canvasTag.width), (0.05 * canvasTag.height))
   }
   function displayMouseLives() {
     ctx.font = "32px Arial"
     ctx.fillStyle = "#716969"
-    ctx.fillText("Mouse\'s Lives: " + mouse.lives, (0.8 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.fillText("Mouse\'s Lives: " + mouse.lives, (0.01 * canvasTag.width), (0.05 * canvasTag.height))
   }
   function displayCategory(category) {
     ctx.font = "72px Arial"
@@ -367,10 +368,20 @@ $(document).ready(function () {
   function displayStart() {
     ctx.font = "72px Arial"
     ctx.fillStyle = "#716969"
-    ctx.fillText("Avoid the Raindrops", (0.3 * canvasTag.width), (0.4 * canvasTag.height))
+    ctx.fillText("Avoid the Raindrops", (0.28 * canvasTag.width), (0.3 * canvasTag.height))
     ctx.font = "16px Arial"
     ctx.fillStyle = "#2D2E2E"
-    ctx.fillText("Press Space to Start", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+    ctx.fillText("Press Space to Start", (0.44 * canvasTag.width), (0.42 * canvasTag.height))
+  }
+  function displaySingle () {
+    var image = new Image()
+    image.src = 'assets/img/start/singlePlayerToggle.png'
+    ctx.drawImage(image, (0.4 * canvasTag.width), (0.56 * canvasTag.height), (0.17 * canvasTag.width), (12 / 30 * 0.17 * canvasTag.width))
+  }
+  function displayDouble() {
+    var image = new Image()
+    image.src = 'assets/img/start/doublePlayerToggle.png'
+    ctx.drawImage(image, (0.4 * canvasTag.width), (0.56 * canvasTag.height), (0.17 * canvasTag.width), (12 / 30 * 0.17 * canvasTag.width))
   }
   // function resize() {
   //   $('#gameCanvas')[0].width = window.innerWidth
@@ -504,13 +515,11 @@ $(document).ready(function () {
     checkCharacterLives()
     displayTime()
     drawCharacter()
-    console.log('2',gameOver)
     if (activateIndicator) {
       displayHit(indicatorX,indicatorY)
       indicatorTimer--
     }
     if (gameOver) {
-      console.log('3',gameOver)
       raindropSpawnDuration = 20
       requestAnimationFrame(runGameOverCanvas)
     }
@@ -524,9 +533,17 @@ $(document).ready(function () {
   }
 
   function checkGameOver () {
+    console.log(characterArr)
     if (characterArr.length === 0) {
       gameOver = true
     }
+  }
+  function checkRestart () {
+    $(document).on('keydown', function (e) {
+      if(e.keyCode == 32) {
+        document.location.reload()
+      }
+    }.bind(this))
   }
   function runGameOverCanvas () {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
@@ -542,17 +559,7 @@ $(document).ready(function () {
     }
   }
 
-  function checkRestart () {
-    $(document).on('keydown', function (e) {
-      if(e.keyCode == 32) {
-        activateRestart()
-      }
-    }.bind(this))
-  }
-  function activateRestart () {
-    document.location.reload()
-  }
-
+  var singlePlayer = true
   function checkStart() {
     $(document).on('keydown', function (e) {
       if(e.keyCode == 32 && gameOver) {
@@ -564,14 +571,45 @@ $(document).ready(function () {
         gameOver = false
     }.bind(this))
   }
+  function togglePlayer () {
+    if (singlePlayer) {
+      $(document).on('keydown', function (e) {
+        if(e.keyCode == 39 || e.keyCode == 37) {
+          singlePlayer = false
+        }
+      }.bind(this))
+    }
+    else if (!singlePlayer) {
+      $(document).on('keydown', function (e) {
+        if(e.keyCode == 39 || e.keyCode == 37) {
+          singlePlayer = true
+        }
+      }.bind(this))
+    }
+  }
+  function setPlayer () {
+    if (singlePlayer) {
+      characterArr.push(cat)
+    }
+    else if (!singlePlayer) {
+      characterArr.push(cat)
+      characterArr.push(mouse)
+    }
+  }
   function initialize() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
     displayStart()
-    spawnRaindrops()
-    checkRaindrops()
     checkStart()
+    togglePlayer()
+    if (singlePlayer) {
+      displaySingle()
+    }
+    else {
+      displayDouble()
+    }
     if (!gameOver) {
+      setPlayer()
       startTimer()
       requestAnimationFrame(runCanvas)
     }
