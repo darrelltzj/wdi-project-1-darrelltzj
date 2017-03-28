@@ -13,9 +13,9 @@
 // rain frequency stages - check game over - OK
 // pause function - save and restore - check when game Over - OK
 // restart - OK
+// Hit indicator --OK
 
-// Hit indicator
-// mouse control & wasd
+// mouse playerControl & wasd
 // mouse Character
 // initialize options - if else in runCanvas function - gameover window and runCanvas window
 
@@ -60,7 +60,7 @@ $(document).ready(function () {
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
-  var cat = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 4)
+  var cat = new Character(0.11, (0.1 * canvasTag.width), offsetPercent, 'cat', '\.png', 8, 4, 1)
   characterArr.push(cat)
   // var mouse = new Character(0.11, offsetPercent, 'cat', '\.png', 8, 3)
   // characterArr.push(mouse)
@@ -160,13 +160,13 @@ $(document).ready(function () {
     })
     displayCatLives()
   }
-  function Character(sizePercent, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity) {
+  function Character(sizePercent, posX, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl) {
     this.sizePercent = sizePercent
     this.posYOffsetPercent = posYOffsetPercent
 
     this.width = this.sizePercent * canvasTag.width
     this.height = (342 / 575) * this.width //need to adjust to % of canvas?
-    this.posX = (canvasTag.width - this.width) / 2
+    this.posX = posX
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
 
     this.mainImageFolder = mainImageFolder
@@ -180,29 +180,52 @@ $(document).ready(function () {
     this.faceRight = true
     this.velocity = velocity
 
+    this.playerControl = playerControl
+
     this.lives = 9
 
     this.rightPressed = false;
     this.leftPressed = false;
   }
   Character.prototype.control = function () {
-    $(document).on('keydown', function (e) {
-      if(e.keyCode == 39) {
-        this.rightPressed = true
-      }
-      else if(e.keyCode == 37) {
-        this.leftPressed = true
-      }
-    }.bind(this))
+    if (this.playerControl === 0) {
+      $(document).on('keydown', function (e) {
+        if(e.keyCode == 39) {
+          this.rightPressed = true
+        }
+        else if(e.keyCode == 37) {
+          this.leftPressed = true
+        }
+      }.bind(this))
 
-    $(document).on('keyup', function (e) {
-      if(e.keyCode == 39) {
-        this.rightPressed = false
-      }
-      else if(e.keyCode == 37) {
-        this.leftPressed = false
-      }
-    }.bind(this))
+      $(document).on('keyup', function (e) {
+        if(e.keyCode == 39) {
+          this.rightPressed = false
+        }
+        else if(e.keyCode == 37) {
+          this.leftPressed = false
+        }
+      }.bind(this))
+    }
+    else if (this.playerControl === 1) {
+      $(document).on('mousemove', function (e) {
+        var relativeX = e.clientX - canvasTag.offsetLeft
+        if(relativeX > 0 && relativeX < canvasTag.width) {
+          if ((this.posX + this.width / 2) < relativeX) {
+            this.rightPressed = true
+            this.leftPressed = false
+          }
+          else if ((this.posX + this.width / 2) > relativeX) {
+            this.leftPressed = true
+            this.rightPressed = false
+          }
+          else {
+            this.leftPressed = false
+            this.rightPressed = false
+          }
+        }
+      }.bind(this))
+    }
 
     this.move()
     this.faceOrientation()
@@ -504,11 +527,20 @@ $(document).ready(function () {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
     displayStart()
+    spawnRaindrops()
+    checkRaindrops()
+    
+    if (!gameOver) {
+      startTimer()
+      requestAnimationFrame(runCanvas)
+    }
+    else {
+      requestAnimationFrame(initialize)
+    }
+
     $(document).on('keydown', function (e) {
       if(e.keyCode == 32 && gameOver) {
         gameOver = false
-        startTimer()
-        runCanvas()
       }
     }.bind(this))
   }
