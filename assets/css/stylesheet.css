@@ -21,6 +21,14 @@
   z-index: 2;
 }*/
 
+p {
+  font: 72px Arial;
+  color:#716969;
+  /*align-self: center;*/
+  /*position: absolute;*/
+  z-index: 2;
+}
+
 canvas {
   background-color: black;
   /*background-image: url('/assets/img/background/0.jpg');*/
