@@ -15,8 +15,8 @@
 // restart - OK
 // Hit indicator --OK
 // cat2 playerControl & wasd --OK
+// live display name --OK
 
-// live display name
 // initialize options - if else in runCanvas function - gameover window and runCanvas window
 // event listener for resize
 // font
@@ -33,12 +33,12 @@
 
 $(document).ready(function () {
   var canvasTag = $('#gameCanvas')[0]
-  var ctx = canvasTag.getContext("2d")
+  var ctx = canvasTag.getContext('2d')
 
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
 
-  var offsetPercent = 0.97 //for background image
+  var offsetPercent = 0.97 //offset to floor for background image
   var gameEnvironment = {
     width: canvasTag.width,
     height: canvasTag.height,
@@ -205,6 +205,7 @@ $(document).ready(function () {
   Character.prototype.control = function () {
     if (this.playerControl === 0) {
       $(document).on('mousemove', function (e) {
+        e.preventDefault()
         var relativeX = e.clientX - canvasTag.offsetLeft
         if(relativeX > 0 && relativeX < canvasTag.width) {
           if ((this.posX + this.width / 2) < relativeX) {
@@ -224,6 +225,7 @@ $(document).ready(function () {
     }
     else if (this.playerControl === 1) {
       $(document).on('keydown', function (e) {
+        e.preventDefault()
         if(e.keyCode == 39) {
           this.rightPressed = true
         }
@@ -233,6 +235,7 @@ $(document).ready(function () {
       }.bind(this))
 
       $(document).on('keyup', function (e) {
+        e.preventDefault()
         if(e.keyCode == 39) {
           this.rightPressed = false
         }
@@ -243,6 +246,7 @@ $(document).ready(function () {
     }
     else if (this.playerControl === 2) {
       $(document).on('keydown', function (e) {
+        e.preventDefault()
         if(e.keyCode == 68) {
           this.rightPressed = true
         }
@@ -252,6 +256,7 @@ $(document).ready(function () {
       }.bind(this))
 
       $(document).on('keyup', function (e) {
+        e.preventDefault()
         if(e.keyCode == 68) {
           this.rightPressed = false
         }
@@ -323,74 +328,85 @@ $(document).ready(function () {
       indicatorTimer = 15
     }
     else if (activateIndicator) {
-      ctx.font = "72px Arial"
-      ctx.fillStyle = "#716969"
-      ctx.fillText("-1", posX, posY)
+      ctx.font = '72px Arial'
+      ctx.fillStyle = '#716969'
+      ctx.fillText('-1', posX, posY)
     }
   }
   function displayTime() {
-    ctx.font = "40px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText(minute + " : " + second, (0.46 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.font = '40px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText(minute + ' : ' + second, (0.5 * (canvasTag.width - ctx.measureText(minute + ' : ' + second).width)), (0.06 * canvasTag.height))
   }
   function displayCatLives() {
-    ctx.font = "32px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText("Player One:  " + cat.lives, (0.85 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.font = '32px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText('Player One:  ' + cat.lives, (0.82 * canvasTag.width), (0.06 * canvasTag.height))
   }
   function displayMouseLives() {
-    ctx.font = "32px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText("Player Two:  " + cat2.lives, (0.01 * canvasTag.width), (0.05 * canvasTag.height))
+    ctx.font = '32px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText('Player Two:  ' + cat2.lives, (0.04 * canvasTag.width), (0.06 * canvasTag.height))
   }
   function displayCategory(category) {
-    ctx.font = "72px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText("Category " + category, (0.37 * canvasTag.width), (0.4 * canvasTag.height))
+    ctx.font = '72px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText('Category ' + category, 0.5 * (canvasTag.width - ctx.measureText('Category ' + category).width), (0.4 * canvasTag.height))
+    ctx.font = '16px Arial'
+    ctx.fillStyle = '#2D2E2E'
+    ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
   function displayBrace() {
-    ctx.font = "72px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText("Get Ready", (0.37 * canvasTag.width), (0.4 * canvasTag.height))
+    ctx.font = '72px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText('Get Ready', 0.5 * (canvasTag.width - ctx.measureText('Get Ready').width), (0.4 * canvasTag.height))
+    ctx.font = '16px Arial'
+    ctx.fillStyle = '#2D2E2E'
+    ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
   function displayPause() {
-    ctx.font = "72px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText("Game Paused", (0.34 * canvasTag.width), (0.4 * canvasTag.height))
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#2D2E2E"
-    ctx.fillText("Press Space to Pause", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
-  }
-  function displayResumeInstructions() {
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#2D2E2E"
-    ctx.fillText("Press Space to Resume", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+    ctx.font = '72px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText('Game Paused', 0.5 * (canvasTag.width - ctx.measureText('Game Paused').width), (0.4 * canvasTag.height))
+    ctx.font = '16px Arial'
+    ctx.fillStyle = '#2D2E2E'
+    ctx.fillText('Press Space to Resume', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Resume').width), (0.52 * canvasTag.height))
   }
   function displayGameOver() {
-    ctx.font = "72px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText("Game Over", (0.37 * canvasTag.width), (0.4 * canvasTag.height))
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#2D2E2E"
-    ctx.fillText("Press Space to Restart", (0.44 * canvasTag.width), (0.52 * canvasTag.height))
+    ctx.font = '72px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText('Game Over', 0.5 * (canvasTag.width - ctx.measureText('Game Over').width), (0.4 * canvasTag.height))
+    ctx.font = '16px Arial'
+    ctx.fillStyle = '#2D2E2E'
+    ctx.fillText('Press Space to Restart', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Restart').width), (0.52 * canvasTag.height))
   }
   function displayStart() {
-    ctx.font = "72px Arial"
-    ctx.fillStyle = "#716969"
-    ctx.fillText("Avoid the Raindrops", (0.28 * canvasTag.width), (0.3 * canvasTag.height))
-    ctx.font = "16px Arial"
-    ctx.fillStyle = "#2D2E2E"
-    ctx.fillText("Press Space to Start", (0.44 * canvasTag.width), (0.42 * canvasTag.height))
+    ctx.font = '80px Arial'
+    ctx.fillStyle = '#716969'
+    ctx.fillText('Avoid the Raindrops', 0.5 * (canvasTag.width - ctx.measureText('Avoid the Raindrops').width), (0.27 * canvasTag.height))
+    ctx.font = '16px Arial'
+    ctx.fillStyle = '#2D2E2E'
+    ctx.fillText('Press Space to Start', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Start').width), (0.41 * canvasTag.height))
   }
   function displaySingle () {
     var image = new Image()
     image.src = 'assets/img/start/singlePlayerToggle.png'
-    ctx.drawImage(image, (0.4 * canvasTag.width), (0.56 * canvasTag.height), (0.17 * canvasTag.width), (12 / 30 * 0.17 * canvasTag.width))
+    ctx.drawImage(image, (0.42 * canvasTag.width), (0.57 * canvasTag.height), (0.16 * canvasTag.width), (12 / 30 * 0.16 * canvasTag.width))
   }
   function displayDouble() {
     var image = new Image()
     image.src = 'assets/img/start/doublePlayerToggle.png'
-    ctx.drawImage(image, (0.4 * canvasTag.width), (0.56 * canvasTag.height), (0.17 * canvasTag.width), (12 / 30 * 0.17 * canvasTag.width))
+    ctx.drawImage(image, (0.42 * canvasTag.width), (0.57 * canvasTag.height), (0.16 * canvasTag.width), (12 / 30 * 0.16 * canvasTag.width))
+  }
+  function displayArrow () {
+    var image = new Image()
+    image.src = 'assets/img/start/arrow.png'
+    ctx.drawImage(image, (0.63 * canvasTag.width), (0.6 * canvasTag.height), (0.06 * canvasTag.width), (0.06 * canvasTag.width))
+  }
+  function displayWasd () {
+    var image = new Image()
+    image.src = 'assets/img/start/wasd.png'
+    ctx.drawImage(image, (0.3 * canvasTag.width), (0.61 * canvasTag.height), (0.06 * canvasTag.width), (187 / 288 * 0.06 * canvasTag.width))
   }
   // function resize() {
   //   $('#gameCanvas')[0].width = window.innerWidth
@@ -571,28 +587,32 @@ $(document).ready(function () {
   function checkStart() {
     $(document).on('keydown', function (e) {
       if(e.keyCode == 32 && gameOver) {
+        e.preventDefault()
         gameOver = false
       }
-    }.bind(this))
+    })
 
     $(document).on('dblclick', function (e) {
-        gameOver = false
-    }.bind(this))
+      e.preventDefault()
+      gameOver = false
+    })
   }
   function togglePlayer () {
     if (singlePlayer) {
       $(document).on('keydown', function (e) {
+        e.preventDefault()
         if(e.keyCode == 39 || e.keyCode == 37) {
           singlePlayer = false
         }
-      }.bind(this))
+      })
     }
     else if (!singlePlayer) {
       $(document).on('keydown', function (e) {
+        e.preventDefault()
         if(e.keyCode == 39 || e.keyCode == 37) {
           singlePlayer = true
         }
-      }.bind(this))
+      })
     }
   }
   function setPlayer () {
@@ -612,9 +632,12 @@ $(document).ready(function () {
     togglePlayer()
     if (singlePlayer) {
       displaySingle()
+      displayArrow()
     }
     else {
       displayDouble()
+      displayArrow()
+      displayWasd()
     }
     if (!gameOver) {
       setPlayer()
