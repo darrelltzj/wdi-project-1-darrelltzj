@@ -75,6 +75,7 @@ $(document).ready(function () {
   var singlePlayer = true
   var playerOneControl = 1
   var playerTwoControl = 2
+  var startingPlayerCount = 1
 
   // #---Player Character Array---
   // ## Controls: mouse: 0, left / right: 1, WASD: 2
@@ -186,10 +187,10 @@ $(document).ready(function () {
     characterArr.forEach(function (character) {
       createFrame(character)
     })
-    if (characterArr.length === 1) {
+    if (startingPlayerCount === 1) {
       displayCatLives()
     }
-    else if (characterArr.length === 2) {
+    else if (startingPlayerCount === 2) {
       displayCatLives()
       displayCat2Lives()
     }
@@ -716,12 +717,14 @@ $(document).ready(function () {
     if (singlePlayer) {
       cat.playerControl = playerOneControl
       characterArr.push(cat)
+      startingPlayerCount = 1
     }
     else if (!singlePlayer) {
       cat.playerControl = playerOneControl
       cat2.playerControl = playerTwoControl
       characterArr.push(cat)
       characterArr.push(cat2)
+      startingPlayerCount = 2
     }
   }
   function initialize() {
@@ -752,14 +755,12 @@ $(document).ready(function () {
       else if (playerOneControl === 1) {
         displayArrow()
       }
-      // displayArrow() // if else
       if (playerTwoControl === 0) {
         displayMouseTwo()
       }
       else if (playerTwoControl === 2) {
         displayWasd()
       }
-      // displayWasd() // if else
     }
     if (!gameOver) {
       $('#coverTheme')[0].currentTime = 0
