@@ -19,12 +19,12 @@
 // live display name --OK
 // initialize options - if else in runCanvas function - gameover window and runCanvas window --OK
 // Create sprite - cat2 --OK?
-// event listener for resize
-
-// font
+// event listener for resize --OK?
+// font --OK
 // escape game
-// weather indicator
+
 // readme
+// weather indicator
 // collision (2 player)
 // mouse Character - go through wall
 // AI?
@@ -630,7 +630,7 @@ $(document).ready(function () {
       if(e.keyCode == 32) {
         document.location.reload()
       }
-    }.bind(this))
+    })
   }
   function runGameOverCanvas () {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
@@ -655,11 +655,10 @@ $(document).ready(function () {
         gameOver = false
       }
     })
-
-    $(document).on('dblclick', function (e) {
-      e.preventDefault()
-      gameOver = false
-    })
+    // $(document).on('dblclick', function (e) {
+    //   e.preventDefault()
+    //   gameOver = false
+    // })
   }
   function togglePlayer () {
     if (singlePlayer) {
@@ -795,6 +794,13 @@ $(document).ready(function () {
         $('#bloop')[0].muted = true
         $('#meow')[0].muted = true
       }
+    }
+  })
+
+  // #---Escape to restart---
+  $(document).on('keydown', function (e) {
+    if(e.keyCode == 27) {
+      document.location.reload()
     }
   })
 
