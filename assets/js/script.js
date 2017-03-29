@@ -30,7 +30,7 @@
 // AI?
 // wind?
 // Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
-// http://minutelabs.io/ //Arrow by Numero Uno from the Noun Project
+// http://minutelabs.io/ //Arrow by Numero Uno from the Noun Project //Speaker by Ján Slobodník from the Noun Project //mute volume by Ján Slobodník from the Noun Project
 
 $(document).ready(function () {
   // #---Game Canvas and Environment---
@@ -86,6 +86,9 @@ $(document).ready(function () {
   var oldCanvasWidth = canvasTag.width
   var oldCatPosX = cat.posX
   var oldCat2PosX = cat2.posX
+
+  // #---Mute Toggle---
+  var mute = false
 
   // #---Raindrop functions---
   function spawnRaindrops () {
@@ -187,7 +190,7 @@ $(document).ready(function () {
     }
     else if (characterArr.length === 2) {
       displayCatLives()
-      displayMouseLives()
+      displayCat2Lives()
     }
   }
   function Character(sizePercent, posX, heightWidthRatio, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl) {
@@ -352,17 +355,17 @@ $(document).ready(function () {
   function displayTime() {
     ctx.font = '40px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
-    ctx.fillText(minute + ' : ' + second, (0.5 * (canvasTag.width - ctx.measureText(minute + ' : ' + second).width)), (0.06 * canvasTag.height))
+    ctx.fillText(minute + ' : ' + second, (0.5 * (canvasTag.width - ctx.measureText(minute + ' : ' + second).width)), (0.07 * canvasTag.height))
   }
   function displayCatLives() {
     ctx.font = '32px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
-    ctx.fillText('Player One:  ' + cat.lives, (0.82 * canvasTag.width), (0.06 * canvasTag.height))
+    ctx.fillText('Player One:  ' + cat.lives, (0.8 * canvasTag.width), (0.07 * canvasTag.height))
   }
-  function displayMouseLives() {
+  function displayCat2Lives() {
     ctx.font = '32px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
-    ctx.fillText('Player Two:  ' + cat2.lives, (0.04 * canvasTag.width), (0.06 * canvasTag.height))
+    ctx.fillText('Player Two:  ' + cat2.lives, (0.04 * canvasTag.width), (0.07 * canvasTag.height))
   }
   function displayCategory(category) {
     ctx.font = '72px Comfortaa, cursive'
@@ -433,6 +436,13 @@ $(document).ready(function () {
     var image = new Image()
     image.src = 'assets/img/start/mouse.png'
     ctx.drawImage(image, (0.3 * canvasTag.width), (0.56 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
+  }
+  function displayAudioStatus () {
+    if (mute) {
+      var image = new Image()
+      image.src = 'assets/img/start/mute.png'
+      ctx.drawImage(image, (0.97 * canvasTag.width), (0.02 * canvasTag.height), (0.02 * canvasTag.width), (0.02 * canvasTag.width))
+    }
   }
 
   // #---Timer functions---
@@ -544,6 +554,7 @@ $(document).ready(function () {
     displayPause()
     displayTime()
     drawCharacter()
+    displayAudioStatus()
     if (pause) {
       requestAnimationFrame(pauseCanvas)
     }
@@ -586,6 +597,7 @@ $(document).ready(function () {
     checkCharacterLives()
     displayTime()
     drawCharacter()
+    displayAudioStatus()
     if (activateIndicator) {
       displayHit(indicatorX,indicatorY)
       indicatorTimer--
@@ -625,6 +637,7 @@ $(document).ready(function () {
     displayTime()
     drawCharacter()
     checkRestart()
+    displayAudioStatus()
     if (gameOver) {
       requestAnimationFrame(runGameOverCanvas)
     }
@@ -705,6 +718,7 @@ $(document).ready(function () {
     checkStart()
     togglePlayer()
     toggleControl()
+    displayAudioStatus()
     if (singlePlayer) {
       displaySingle()
       if (playerOneControl === 0) {
@@ -744,4 +758,24 @@ $(document).ready(function () {
     }
   }
   initialize()
+
+  // #---Mute Listener---
+  $(document).on('keydown', function (e) {
+    e.preventDefault()
+    if (e.keyCode == 77) {
+      if (mute) {
+        mute = false
+        $('.audio')[0].muted = false
+        $('#coverTheme')[0].muted = false
+        $('#gameTheme')[0].muted = false
+      }
+      else if (!mute) {
+        mute = true
+        $('.audio')[0].muted = true
+        $('#coverTheme')[0].muted = true
+        $('#gameTheme')[0].muted = true
+      }
+    }
+  })
+
 })
