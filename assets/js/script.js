@@ -19,8 +19,8 @@
 // live display name --OK
 // initialize options - if else in runCanvas function - gameover window and runCanvas window --OK
 // Create sprite - cat2 --OK?
-
 // event listener for resize
+
 // font
 // escape game
 // weather indicator
@@ -33,12 +33,11 @@
 // http://minutelabs.io/ //Arrow by Numero Uno from the Noun Project
 
 $(document).ready(function () {
+  // #---Game Canvas and Environment---
   var canvasTag = $('#gameCanvas')[0]
   var ctx = canvasTag.getContext('2d')
-
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
-
   var offsetPercent = 0.97 //offset to floor for background image
   var gameEnvironment = {
     width: canvasTag.width,
@@ -50,19 +49,23 @@ $(document).ready(function () {
     imageFormat: '\.jpg'
   }
 
+  // #---Timer---
   var timerId = 0
   var totalTimeCount = 0
   var second = 0
   var minute = 0
+
+  // #---Game Status---
   var pause = false
   var gameOver = true
-  var characterArr = []
 
+  // #---Raindrop Variables---
   var raindropSpawnDuration = 20
   var raindropRemovalDuration = 5
   var raindropsArr = []
   var raindropSpawnTimer = raindropSpawnDuration
 
+  // #---Hit Indicator vaviables---
   var indicatorTimer = 15
   var activateIndicator = false
   var indicatorX = 0
@@ -73,7 +76,9 @@ $(document).ready(function () {
   var playerOneControl = 1
   var playerTwoControl = 2
 
-  //control - mouse 0, left right 1, WASD 2
+  // #---Player Character Array---
+  // ##control: mouse - 0, left right - 1, WASD - 2
+  var characterArr = []
   var cat = new Character(0.11, (0.8 * canvasTag.width), (342 / 575), offsetPercent, 'cat', '\.png', 8, 4, playerOneControl)
   var cat2 = new Character(0.11, (0.1 * canvasTag.width), (342 / 575), offsetPercent, 'cat2', '\.png', 8, 4, playerTwoControl)
 
@@ -82,6 +87,7 @@ $(document).ready(function () {
   var oldCatPosX = cat.posX
   var oldCat2PosX = cat2.posX
 
+  // #---Raindrop functions---
   function spawnRaindrops () {
     if (raindropsArr.length === 0) {
       this.raindrop = new Raindrops
@@ -111,7 +117,7 @@ $(document).ready(function () {
     })
   }
   function Raindrops () {
-    this.sizePercent = 0.02
+    this.sizePercent = 0.016
     this.width = this.sizePercent * canvasTag.width
     this.height = this.width
     this.posX = this.randomX()
@@ -164,6 +170,7 @@ $(document).ready(function () {
     }
   }
 
+  // #---Character functions---
   function checkCharacterLives() {
     characterArr.forEach(function (character, i) {
       if (character.lives === 0) {
@@ -325,6 +332,7 @@ $(document).ready(function () {
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
   }
 
+  // #---Draw Image and Text functions---
   function createFrame(item) {
     var image = new Image()
     image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
@@ -336,63 +344,63 @@ $(document).ready(function () {
       indicatorTimer = 15
     }
     else if (activateIndicator) {
-      ctx.font = '72px Arial'
+      ctx.font = '72px Homenaje'
       ctx.fillStyle = '#716969'
       ctx.fillText('-1', posX, posY)
     }
   }
   function displayTime() {
-    ctx.font = '40px Arial'
+    ctx.font = '40px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText(minute + ' : ' + second, (0.5 * (canvasTag.width - ctx.measureText(minute + ' : ' + second).width)), (0.06 * canvasTag.height))
   }
   function displayCatLives() {
-    ctx.font = '32px Arial'
+    ctx.font = '32px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText('Player One:  ' + cat.lives, (0.82 * canvasTag.width), (0.06 * canvasTag.height))
   }
   function displayMouseLives() {
-    ctx.font = '32px Arial'
+    ctx.font = '32px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText('Player Two:  ' + cat2.lives, (0.04 * canvasTag.width), (0.06 * canvasTag.height))
   }
   function displayCategory(category) {
-    ctx.font = '72px Arial'
+    ctx.font = '72px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText('Category ' + category, 0.5 * (canvasTag.width - ctx.measureText('Category ' + category).width), (0.4 * canvasTag.height))
-    ctx.font = '16px Arial'
+    ctx.font = '16px Homenaje'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
   function displayBrace() {
-    ctx.font = '72px Arial'
+    ctx.font = '72px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText('Get Ready', 0.5 * (canvasTag.width - ctx.measureText('Get Ready').width), (0.4 * canvasTag.height))
-    ctx.font = '16px Arial'
+    ctx.font = '16px Homenaje'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
   function displayPause() {
-    ctx.font = '72px Arial'
+    ctx.font = '72px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText('Game Paused', 0.5 * (canvasTag.width - ctx.measureText('Game Paused').width), (0.4 * canvasTag.height))
-    ctx.font = '16px Arial'
+    ctx.font = '16px Homenaje'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Resume', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Resume').width), (0.52 * canvasTag.height))
   }
   function displayGameOver() {
-    ctx.font = '72px Arial'
+    ctx.font = '72px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText('Game Over', 0.5 * (canvasTag.width - ctx.measureText('Game Over').width), (0.4 * canvasTag.height))
-    ctx.font = '16px Arial'
+    ctx.font = '16px Homenaje'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Restart', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Restart').width), (0.52 * canvasTag.height))
   }
   function displayStart() {
-    ctx.font = '80px Arial'
+    ctx.font = '80px Homenaje'
     ctx.fillStyle = '#716969'
     ctx.fillText('Avoid the Raindrops', 0.5 * (canvasTag.width - ctx.measureText('Avoid the Raindrops').width), (0.28 * canvasTag.height))
-    ctx.font = '16px Arial'
+    ctx.font = '16px Homenaje'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Start', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Start').width), (0.4 * canvasTag.height))
   }
@@ -426,12 +434,8 @@ $(document).ready(function () {
     image.src = 'assets/img/start/mouse.png'
     ctx.drawImage(image, (0.3 * canvasTag.width), (0.56 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
   }
-  // function resize() {
-  //   $('#gameCanvas')[0].width = window.innerWidth
-  //   $('#gameCanvas')[0].height = window.innerHeight
-  //   cat.resize()
-  // }
 
+  // #---Timer functions---
   function twoDigit (digit) {
     return (digit < 10) ? '0' + digit.toString() : digit.toString()
   }
@@ -451,6 +455,7 @@ $(document).ready(function () {
     }
   }
 
+  // #---Raindrop frequency / Stage Control---
   function controlStages () {
     if (!gameOver) {
       switch(true) {
@@ -505,6 +510,7 @@ $(document).ready(function () {
     }
   }
 
+  // #---Pause functions---
   function activatePause () {
     if (!gameOver) {
       pause = true
@@ -545,7 +551,7 @@ $(document).ready(function () {
   }
   $(window).on('blur', activatePause)
 
-
+  // #---Screen resize functions---
   function activateResize () {
     $('#gameCanvas')[0].width = window.innerWidth
     $('#gameCanvas')[0].height = window.innerHeight
@@ -559,6 +565,7 @@ $(document).ready(function () {
   }
   $(window).on('resize', activateResize)
 
+  // #---Main Game Running function---
   function runCanvas() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
@@ -589,6 +596,7 @@ $(document).ready(function () {
     }
   }
 
+  // #---Game Over functions---
   function checkGameOver () {
     if (characterArr.length === 0) {
       gameOver = true
@@ -615,6 +623,7 @@ $(document).ready(function () {
     }
   }
 
+  // #---Start functions---
   function checkStart() {
     $(document).on('keydown', function (e) {
       if(e.keyCode == 32 && gameOver) {
