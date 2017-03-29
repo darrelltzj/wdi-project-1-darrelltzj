@@ -77,7 +77,7 @@ $(document).ready(function () {
   var playerTwoControl = 2
 
   // #---Player Character Array---
-  // ##control: mouse - 0, left right - 1, WASD - 2
+  // ## Controls: mouse: 0, left / right: 1, WASD: 2
   var characterArr = []
   var cat = new Character(0.11, (0.8 * canvasTag.width), (342 / 575), offsetPercent, 'cat', '\.png', 8, 4, playerOneControl)
   var cat2 = new Character(0.11, (0.1 * canvasTag.width), (342 / 575), offsetPercent, 'cat2', '\.png', 8, 4, playerTwoControl)
@@ -168,6 +168,7 @@ $(document).ready(function () {
           indicatorX = this.posX
           indicatorY = this.posY - (this.height)
           activateIndicator = true
+          $('#meow')[0].play()
         }
       }.bind(this))
     }
@@ -470,48 +471,51 @@ $(document).ready(function () {
     if (!gameOver) {
       switch(true) {
         case (totalTimeCount > 0 && totalTimeCount <= 2):
+        raindropSpawnDuration = 20
+        displayBrace()
+        break
+        case (totalTimeCount > 2 && totalTimeCount <= 6):
+        raindropSpawnDuration = 16
+        break
+        case (totalTimeCount > 6 && totalTimeCount <= 8):
         raindropSpawnDuration = 12
         displayCategory(5)
         break
-        case (totalTimeCount > 2 && totalTimeCount <= 5):
+        case (totalTimeCount > 8 && totalTimeCount <= 19):
         raindropSpawnDuration = 12
         break
-        case (totalTimeCount > 5 && totalTimeCount <= 7):
+        case (totalTimeCount > 19 && totalTimeCount <= 21):
         raindropSpawnDuration = 8
         displayCategory(4)
         break
-        case (totalTimeCount > 7 && totalTimeCount <= 10):
+        case (totalTimeCount > 21 && totalTimeCount <= 32):
         raindropSpawnDuration = 8
         break
-        case (totalTimeCount > 10 && totalTimeCount <= 12):
-        raindropSpawnDuration = 6
+        case (totalTimeCount > 32 && totalTimeCount <= 34):
+        raindropSpawnDuration = 5
         displayCategory(3)
         break
-        case (totalTimeCount > 12 && totalTimeCount <= 20):
-        raindropSpawnDuration = 6
+        case (totalTimeCount > 34 && totalTimeCount <= 48):
+        raindropSpawnDuration = 5
         break
-        case (totalTimeCount > 20 && totalTimeCount <= 22):
+        case (totalTimeCount > 48 && totalTimeCount <= 50):
+        raindropSpawnDuration = 20
+        break
+        case (totalTimeCount > 50 && totalTimeCount <= 52):
         raindropSpawnDuration = 4
         displayCategory(2)
         break
-        case (totalTimeCount > 22 && totalTimeCount <= 40):
+        case (totalTimeCount > 52 && totalTimeCount<= 76):
         raindropSpawnDuration = 4
         break
-        case (totalTimeCount > 40 && totalTimeCount <= 42):
-        raindropSpawnDuration = 4
-        displayBrace()
-        break
-        case (totalTimeCount > 42 && totalTimeCount<= 44):
-        raindropSpawnDuration = 4
-        break
-        case (totalTimeCount > 44 && totalTimeCount <= 46):
+        case (totalTimeCount > 76 && totalTimeCount <= 78):
         raindropSpawnDuration = 3
         displayCategory(1)
         break
-        case (totalTimeCount > 46 && totalTimeCount <= 50):
+        case (totalTimeCount > 78 && totalTimeCount <= 90):
         raindropSpawnDuration = 3
         break
-        case (totalTimeCount > 50):
+        case (totalTimeCount > 90):
         raindropSpawnDuration = 2
         break
         default:
@@ -663,6 +667,9 @@ $(document).ready(function () {
         e.preventDefault()
         if(e.keyCode == 39 || e.keyCode == 37 || e.keyCode == 65 || e.keyCode == 68) {
           singlePlayer = false
+          if(gameOver) {
+            $('#bloop')[0].play()
+          }
         }
       })
     }
@@ -671,6 +678,9 @@ $(document).ready(function () {
         e.preventDefault()
         if(e.keyCode == 39 || e.keyCode == 37 || e.keyCode == 65 || e.keyCode == 68) {
           singlePlayer = true
+          if(gameOver) {
+            $('#bloop')[0].play()
+          }
         }
       })
     }
@@ -679,6 +689,9 @@ $(document).ready(function () {
     $(document).on('keydown', function (e) {
       e.preventDefault()
       if (e.keyCode == 38 || e.keyCode == 40) {
+        if(gameOver) {
+          $('#bloop')[0].play()
+        }
         if(playerOneControl === 1) {
           playerOneControl = 0
           playerTwoControl = 2
@@ -688,6 +701,9 @@ $(document).ready(function () {
         }
       }
       if (e.keyCode == 87 || e.keyCode == 83) {
+        if(gameOver) {
+          $('#bloop')[0].play()
+        }
         if(playerTwoControl === 2 && playerOneControl !== 0) {
           playerTwoControl = 0
         }
@@ -768,12 +784,16 @@ $(document).ready(function () {
         $('.audio')[0].muted = false
         $('#coverTheme')[0].muted = false
         $('#gameTheme')[0].muted = false
+        $('#bloop')[0].muted = false
+        $('#meow')[0].muted = false
       }
       else if (!mute) {
         mute = true
         $('.audio')[0].muted = true
         $('#coverTheme')[0].muted = true
         $('#gameTheme')[0].muted = true
+        $('#bloop')[0].muted = true
+        $('#meow')[0].muted = true
       }
     }
   })
