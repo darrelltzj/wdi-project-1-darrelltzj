@@ -1,44 +1,16 @@
-// -----TO DO-----
-// jquery on press - OK
-// Raindrop - OK
-// collision detection rain - OK
-// end game - OK
-// timer - OK
-// Create sprite - cat // height342 width 575
-// - edit faceOrientation & createFrame function
-// split rightfacing and reverse facing img - OK
-// need counter - change frame after a few miliseconds - OK
-// - activate faceOrientation even if key is not pressed: press --> image roll 1-last-1 - OK
-// stop animation when key is not pressed - OK
-// rain frequency stages - check game over - OK
-// pause function - save and restore - check when game Over - OK
-// event listener for switch screen - requestAnimationFrame() continues to runCanvas -OK
-// restart - OK
-// Hit indicator --OK
-// cat2 playerControl & wasd --OK
-// live display name --OK
-// initialize options - if else in runCanvas function - gameover window and runCanvas window --OK
-// Create sprite - cat2 --OK?
-// event listener for resize --OK?
-// font --OK
-// escape game
-
-// readme
-// weather indicator
-// collision (2 player)
-// mouse Character - go through wall
-// AI?
-// wind?
-// Mouse by Anton Håkanson from the Noun Project //robot head by Hea Poh Lin from the Noun Project //Keyboard by Paul te Kortschot from the Noun Project // Tennis Player Vector Icon by ProSymbols from the Noun Project // Squash player by Creative Stall from the Noun Project
-// http://minutelabs.io/ //Arrow by Numero Uno from the Noun Project //Speaker by Ján Slobodník from the Noun Project //mute volume by Ján Slobodník from the Noun Project
+// # Avoid the Raindrops
+// =====================
+// darrelltzj for GA WDI 9
 
 $(document).ready(function () {
+
   // #---Game Canvas and Environment---
   var canvasTag = $('#gameCanvas')[0]
   var ctx = canvasTag.getContext('2d')
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
-  var offsetPercent = 0.97 //offset to floor for background image
+  //Offset to floor of background image
+  var offsetPercent = 0.97
   var gameEnvironment = {
     width: canvasTag.width,
     height: canvasTag.height,
@@ -443,7 +415,7 @@ $(document).ready(function () {
     if (mute) {
       var image = new Image()
       image.src = 'assets/img/start/mute.png'
-      ctx.drawImage(image, (0.97 * canvasTag.width), (0.02 * canvasTag.height), (0.02 * canvasTag.width), (0.02 * canvasTag.width))
+      ctx.drawImage(image, (0.97 * canvasTag.width), (0.03 * canvasTag.height), (0.02 * canvasTag.width), (0.02 * canvasTag.width))
     }
   }
 
