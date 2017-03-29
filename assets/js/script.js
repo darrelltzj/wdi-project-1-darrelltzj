@@ -22,6 +22,9 @@
 
 // event listener for resize
 // font
+// escape game
+// weather indicator
+// readme
 // collision (2 player)
 // mouse Character - go through wall
 // AI?
@@ -308,7 +311,6 @@ $(document).ready(function () {
     }
     else {
       this.frameChangeDelay--
-      console.log(this.selectedFrame)
     }
     // console.log(this.selectedFrame)
   }
@@ -388,37 +390,37 @@ $(document).ready(function () {
     ctx.fillText('Avoid the Raindrops', 0.5 * (canvasTag.width - ctx.measureText('Avoid the Raindrops').width), (0.28 * canvasTag.height))
     ctx.font = '16px Arial'
     ctx.fillStyle = '#2D2E2E'
-    ctx.fillText('Press Space to Start', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Start').width), (0.42 * canvasTag.height))
+    ctx.fillText('Press Space to Start', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Start').width), (0.4 * canvasTag.height))
   }
   function displaySingle () {
     var image = new Image()
     image.src = 'assets/img/start/singlePlayerToggle.png'
-    ctx.drawImage(image, (0.42 * canvasTag.width), (0.57 * canvasTag.height), (0.16 * canvasTag.width), (12 / 30 * 0.16 * canvasTag.width))
+    ctx.drawImage(image, (0.43 * canvasTag.width), (0.55 * canvasTag.height), (0.14 * canvasTag.width), (12 / 30 * 0.14 * canvasTag.width))
   }
   function displayDouble() {
     var image = new Image()
     image.src = 'assets/img/start/doublePlayerToggle.png'
-    ctx.drawImage(image, (0.42 * canvasTag.width), (0.57 * canvasTag.height), (0.16 * canvasTag.width), (12 / 30 * 0.16 * canvasTag.width))
+    ctx.drawImage(image, (0.43 * canvasTag.width), (0.55 * canvasTag.height), (0.14 * canvasTag.width), (12 / 30 * 0.14 * canvasTag.width))
   }
   function displayArrow () {
     var image = new Image()
     image.src = 'assets/img/start/arrow.png'
-    ctx.drawImage(image, (0.63 * canvasTag.width), (0.6 * canvasTag.height), (0.06 * canvasTag.width), (0.06 * canvasTag.width))
+    ctx.drawImage(image, (0.63 * canvasTag.width), (0.56 * canvasTag.height), (0.06 * canvasTag.width), (0.06 * canvasTag.width))
   }
   function displayWasd () {
     var image = new Image()
     image.src = 'assets/img/start/wasd.png'
-    ctx.drawImage(image, (0.3 * canvasTag.width), (0.61 * canvasTag.height), (0.06 * canvasTag.width), (187 / 288 * 0.06 * canvasTag.width))
+    ctx.drawImage(image, (0.3 * canvasTag.width), (0.57 * canvasTag.height), (0.06 * canvasTag.width), (187 / 288 * 0.06 * canvasTag.width))
   }
   function displayMouseOne () {
     var image = new Image()
     image.src = 'assets/img/start/mouse.png'
-    ctx.drawImage(image, (0.63 * canvasTag.width), (0.59 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
+    ctx.drawImage(image, (0.63 * canvasTag.width), (0.56 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
   }
   function displayMouseTwo () {
     var image = new Image()
     image.src = 'assets/img/start/mouse.png'
-    ctx.drawImage(image, (0.3 * canvasTag.width), (0.59 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
+    ctx.drawImage(image, (0.3 * canvasTag.width), (0.56 * canvasTag.height), (0.05 * canvasTag.width), (0.05 * canvasTag.width))
   }
   // function resize() {
   //   $('#gameCanvas')[0].width = window.innerWidth
