@@ -344,63 +344,63 @@ $(document).ready(function () {
       indicatorTimer = 15
     }
     else if (activateIndicator) {
-      ctx.font = '72px Homenaje'
+      ctx.font = '72px Comfortaa, cursive'
       ctx.fillStyle = '#716969'
       ctx.fillText('-1', posX, posY)
     }
   }
   function displayTime() {
-    ctx.font = '40px Homenaje'
+    ctx.font = '40px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText(minute + ' : ' + second, (0.5 * (canvasTag.width - ctx.measureText(minute + ' : ' + second).width)), (0.06 * canvasTag.height))
   }
   function displayCatLives() {
-    ctx.font = '32px Homenaje'
+    ctx.font = '32px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Player One:  ' + cat.lives, (0.82 * canvasTag.width), (0.06 * canvasTag.height))
   }
   function displayMouseLives() {
-    ctx.font = '32px Homenaje'
+    ctx.font = '32px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Player Two:  ' + cat2.lives, (0.04 * canvasTag.width), (0.06 * canvasTag.height))
   }
   function displayCategory(category) {
-    ctx.font = '72px Homenaje'
+    ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Category ' + category, 0.5 * (canvasTag.width - ctx.measureText('Category ' + category).width), (0.4 * canvasTag.height))
-    ctx.font = '16px Homenaje'
+    ctx.font = '16px Comfortaa, cursive'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
   function displayBrace() {
-    ctx.font = '72px Homenaje'
+    ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Get Ready', 0.5 * (canvasTag.width - ctx.measureText('Get Ready').width), (0.4 * canvasTag.height))
-    ctx.font = '16px Homenaje'
+    ctx.font = '16px Comfortaa, cursive'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
   function displayPause() {
-    ctx.font = '72px Homenaje'
+    ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Game Paused', 0.5 * (canvasTag.width - ctx.measureText('Game Paused').width), (0.4 * canvasTag.height))
-    ctx.font = '16px Homenaje'
+    ctx.font = '16px Comfortaa, cursive'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Resume', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Resume').width), (0.52 * canvasTag.height))
   }
   function displayGameOver() {
-    ctx.font = '72px Homenaje'
+    ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Game Over', 0.5 * (canvasTag.width - ctx.measureText('Game Over').width), (0.4 * canvasTag.height))
-    ctx.font = '16px Homenaje'
+    ctx.font = '16px Comfortaa, cursive'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Restart', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Restart').width), (0.52 * canvasTag.height))
   }
   function displayStart() {
-    ctx.font = '80px Homenaje'
+    ctx.font = '80px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Avoid the Raindrops', 0.5 * (canvasTag.width - ctx.measureText('Avoid the Raindrops').width), (0.28 * canvasTag.height))
-    ctx.font = '16px Homenaje'
+    ctx.font = '16px Comfortaa, cursive'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Start', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Start').width), (0.4 * canvasTag.height))
   }
@@ -535,6 +535,9 @@ $(document).ready(function () {
     }
   }
   function pauseCanvas() {
+    $('#gameTheme')[0].pause()
+    $('#coverTheme')[0].play()
+    $('#coverTheme')[0].loop = true
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
     pauseToggle()
@@ -545,6 +548,8 @@ $(document).ready(function () {
       requestAnimationFrame(pauseCanvas)
     }
     else {
+      $('#coverTheme')[0].currentTime = 0
+      $('#coverTheme')[0].pause()
       startTimer()
       requestAnimationFrame(runCanvas)
     }
@@ -567,6 +572,8 @@ $(document).ready(function () {
 
   // #---Main Game Running function---
   function runCanvas() {
+    $('#gameTheme')[0].play()
+    $('#gameTheme')[0].loop = true
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
     cat.control()
@@ -690,6 +697,8 @@ $(document).ready(function () {
     }
   }
   function initialize() {
+    $('#coverTheme')[0].play()
+    $('#coverTheme')[0].loop = true
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
     createFrame(gameEnvironment)
     displayStart()
@@ -724,6 +733,8 @@ $(document).ready(function () {
       // displayWasd() // if else
     }
     if (!gameOver) {
+      $('#coverTheme')[0].currentTime = 0
+      $('#coverTheme')[0].pause()
       setPlayer()
       startTimer()
       requestAnimationFrame(runCanvas)
