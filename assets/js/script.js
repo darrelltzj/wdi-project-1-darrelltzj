@@ -68,15 +68,19 @@ $(document).ready(function () {
   var indicatorX = 0
   var indicatorY = 0
 
-  // ---Player Selection ---
+  // #---Player Selection ---
   var singlePlayer = true
   var playerOneControl = 1
   var playerTwoControl = 2
 
   //control - mouse 0, left right 1, WASD 2
   var cat = new Character(0.11, (0.8 * canvasTag.width), (342 / 575), offsetPercent, 'cat', '\.png', 8, 4, playerOneControl)
-  // characterArr.push(cat)
   var cat2 = new Character(0.11, (0.1 * canvasTag.width), (342 / 575), offsetPercent, 'cat2', '\.png', 8, 4, playerTwoControl)
+
+  // #---Resize---
+  var oldCanvasWidth = canvasTag.width
+  var oldCatPosX = cat.posX
+  var oldCat2PosX = cat2.posX
 
   function spawnRaindrops () {
     if (raindropsArr.length === 0) {
@@ -183,10 +187,11 @@ $(document).ready(function () {
     this.sizePercent = sizePercent
     this.posYOffsetPercent = posYOffsetPercent
 
+    this.heightWidthRatio = heightWidthRatio
     this.width = this.sizePercent * canvasTag.width
-    this.height = heightWidthRatio * this.width
+    this.height = this.heightWidthRatio * this.width
     this.posX = posX
-    this.posY = this.posYOffsetPercent * canvasTag.height - this.height
+    this.posY = 0.97 * canvasTag.height - this.height
 
     this.mainImageFolder = mainImageFolder
     this.orientation = 0 //0 is right 1 is left
@@ -314,12 +319,11 @@ $(document).ready(function () {
     }
     // console.log(this.selectedFrame)
   }
-  // Character.prototype.resize = function () {
-  //   this.width = this.sizePercent * canvasTag.width
-  //   this.height = this.width //need to adjust to % of canvas
-  //   // this.posX = (canvasTag.width - this.width) / 2
-  //   this.posY = this.posYOffsetPercent * canvasTag.height - this.height
-  // }
+  Character.prototype.resize = function () {
+    this.width = this.sizePercent * canvasTag.width
+    this.height = this.heightWidthRatio * this.width
+    this.posY = this.posYOffsetPercent * canvasTag.height - this.height
+  }
 
   function createFrame(item) {
     var image = new Image()
@@ -540,6 +544,20 @@ $(document).ready(function () {
     }
   }
   $(window).on('blur', activatePause)
+
+
+  function activateResize () {
+    $('#gameCanvas')[0].width = window.innerWidth
+    $('#gameCanvas')[0].height = window.innerHeight
+    gameEnvironment.width = canvasTag.width
+    gameEnvironment.height = canvasTag.height
+    cat.resize()
+    cat.posX = (canvasTag.width / oldCanvasWidth) * oldCatPosX
+    cat2.resize()
+    cat2.posX = (canvasTag.width / oldCanvasWidth) * oldCat2PosX
+    activatePause()
+  }
+  $(window).on('resize', activateResize)
 
   function runCanvas() {
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
