@@ -48,6 +48,7 @@ If the mouse control was selected, shifting the cursor to either side of the cat
 ### Character Animation
 The initial plan was to use this gif to simulate the cat running.
 
+
 ![Cat Gif](http://rs1366.pbsrc.com/albums/r779/mariperquinto/0550661001369318673_zpsc3a722ef.gif~c200)
 
 However, as HTML Canvas API was used in the making of the game, the canvas has to be cleared each time to remove and replace the previous positions of the characters and raindrops. The cat gif thus remains stationary like this:
@@ -101,7 +102,7 @@ It relies on the Canvas [requestAnimationFrame](https://developer.mozilla.org/en
 
 **Flipping the image:**
 
-The images could be scaled to -1 along the x-axis to flip the images, but as explained [here](http://stackoverflow.com/questions/8168217/html-canvas-how-to-draw-a-flipped-mirrored-image), the canvas context has to be saved, scaled and then restored, thus slowing down the game performance. To work around this, a separate file with the reverse images was created. The *faceOrientation* function controls which file (direction) is used. 0 was set as right facing images and 1 was set as left facing images.
+The images could be scaled to -1 along the x-axis to flip the images, but as explained [here](http://stackoverflow.com/questions/8168217/html-canvas-how-to-draw-a-flipped-mirrored-image), the canvas context has to be saved, scaled and then restored, thus slowing down the game performance. To work around this, a separate file with the reverse images was created. The *faceOrientation* function controls which file (direction) is used. 0 was set as right facing images and 1 was set as left facing images. The *move* function changes the faceRight property each time the left or right arrow is pressed.
 
 ```
 Character.prototype.faceOrientation = function () {
@@ -115,33 +116,97 @@ Character.prototype.faceOrientation = function () {
 }
 ```
 
-### Collision Detection
+### Raindrop Collision Detection
+Each raindrop has a collided property that changes to true whenever the raindrop falls onto the ground or character.
 
-![Collision Detection](http://i.imgur.com/80sDPbU.jpg)
+**Raindrop falling on the floor:**
+![Collision with ground](http://i.imgur.com/SyRMvcg.jpg)
 ```
-Raindrops.prototype.collisionDetection = function () {
-  if (this.posY + this.height >= offsetPercent * canvasTag.height) {
-    this.collided = true
-    this.posY = offsetPercent * canvasTag.height - this.height
-  }
-  else {
-    characterArr.forEach(function (character) {
-      if (!this.collided && this.posX > character.posX && this.posX + this.width < character.posX + character.width && (this.posY + this.height) >= character.posY) {
-        this.collided = true
-        this.posY = character.posY - this.height
-        character.lives--
-        indicatorX = this.posX
-        indicatorY = this.posY - (this.height)
-        activateIndicator = true
-        $('#meow')[0].play()
-      }
-    }.bind(this))
-  }
+if (this.posY + this.height >= offsetPercent * canvasTag.height) {
+  this.collided = true
+  this.posY = offsetPercent * canvasTag.height - this.height
 }
 ```
 
-### Raindrops Animation
+**Raindrop falling on a character:**
 
+![Collision Detection](http://i.imgur.com/80sDPbU.jpg)
+```
+else {
+  characterArr.forEach(function (character) {
+    if (!this.collided && this.posX > character.posX && this.posX + this.width < character.posX + character.width && (this.posY + this.height) >= character.posY) {
+      this.collided = true
+      this.posY = character.posY - this.height
+      character.lives--
+      indicatorX = this.posX
+      indicatorY = this.posY - (this.height)
+      activateIndicator = true
+      $('#meow')[0].play()
+    }
+  }.bind(this))
+}
+```
+
+### Spawning Raindrops
+
+```
+var raindropSpawnDuration = 20
+var raindropRemovalDuration = 5
+var raindropsArr = []
+var raindropSpawnTimer = raindropSpawnDuration
+
+function spawnRaindrops () {
+  if (raindropsArr.length === 0 || raindropSpawnTimer <= 0) {
+    this.raindrop = new Raindrops()
+    raindropsArr.push(this.raindrop)
+    raindropSpawnTimer = raindropSpawnDuration
+  }
+  raindropSpawnTimer--
+}
+function checkRaindrops () {
+  raindropsArr.forEach(function (raindrop, i) {
+    createFrame(raindrop)
+    raindrop.collisionDetection()
+    raindrop.selectFrame()
+    raindrop.move()
+    if (raindrop.collided) {
+      if (raindrop.raindropRemovalTime === 0) {
+        raindropsArr.splice(i, 1)
+      }
+      else {
+        raindrop.raindropRemovalTime--
+      }
+    }
+  })
+}
+```
+
+## Randomizing Raindrop Spawn Location
+
+```
+function Raindrops () {
+  this.sizePercent = 0.016
+  this.width = this.sizePercent * canvasTag.width
+  this.height = this.width
+  this.posX = this.randomX()
+  this.posY = 0
+  this.imageFolder = 'raindrop'
+  this.selectedFrame = 0
+  this.imageFormat = '.png'
+  this.velocity = 0
+  this.gravity = 0.07
+  this.collided = false
+  this.raindropRemovalTime = raindropRemovalDuration
+}
+Raindrops.prototype.randomX = function () {
+  return Math.round(Math.random() * canvasTag.width)
+}
+```
+## Raindrop animation
+
+**Raindrop movement:**
+
+![test](http://www.millersville.edu/physics/experiments/013/fig14p1.gif)
 ```
 Raindrops.prototype.move = function () {
   if (!this.collided) {
@@ -153,6 +218,11 @@ Raindrops.prototype.move = function () {
     this.gravity = 0
   }
 }
+```
+
+**Raindrop Splash**
+
+```
 Raindrops.prototype.selectFrame = function () {
   if (this.collided) {
     this.selectedFrame = 1

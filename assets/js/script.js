@@ -66,11 +66,7 @@ $(document).ready(function () {
 
   // #---Raindrops' Functions---
   function spawnRaindrops () {
-    if (raindropsArr.length === 0) {
-      this.raindrop = new Raindrops()
-      raindropsArr.push(this.raindrop)
-    }
-    else if (raindropSpawnTimer <= 0) {
+    if (raindropsArr.length === 0 || raindropSpawnTimer <= 0) {
       this.raindrop = new Raindrops()
       raindropsArr.push(this.raindrop)
       raindropSpawnTimer = raindropSpawnDuration
