@@ -3,12 +3,12 @@
 // darrelltzj for GA WDI 9
 
 $(document).ready(function () {
-
   // #---Game Canvas and Environment---
   var canvasTag = $('#gameCanvas')[0]
   var ctx = canvasTag.getContext('2d')
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
+
   //Offset to floor of background image
   var offsetPercent = 0.97
   var gameEnvironment = {
@@ -490,7 +490,7 @@ $(document).ready(function () {
         break
         case (totalTimeCount > 90):
         raindropSpawnDuration = 2
-        displayStage(999)
+        displayStage('Impossible')
         break
         default:
         raindropSpawnDuration = 20

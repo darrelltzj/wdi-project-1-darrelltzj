@@ -27,9 +27,11 @@ Players can use either the mouse or the keyboard to control their cats. Only one
 Once players are comfortable with their control selections, they may press *Space* to begin the game.
 
 ### Controlling the Cat
-Player 1 uses the *Left* and *Right* arrows while player 2 uses the *a* and *d* keys to control the cat.
+Keyboard Controls:
+Player 1 uses the *Left* and *Right* arrows while player 2 uses the *a* and *d* keys to maneuver the cat left and right respectively.
 
-wasd lr mouse
+Mouse Control:
+If the mouse control was selected, shifting the cursor to either side of the cat would move it towards the respective directions. Placing the cursor within the cat's width would cause the cat to be stationary.
 
 ## About the Code
 framworks used jQuery HTML Canvas
@@ -46,23 +48,33 @@ framworks used jQuery HTML Canvas
 blur change tab Listener
 
 ## References
+Parts of the code were referred from the following sources.
 
+* from https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
 
+* *function twoDigit()* for the timer on line 423 of script.js was referenced from http://stackoverflow.com/questions/5774042/format-a-number-exactly-two-in-length
 
 ## Credits
+This project is purely for educational purposes and it would not have been made possible without the following sources.
 
 Images
-// Mouse by Anton Håkanson from the Noun Project
-//Keyboard by Paul te Kortschot from the Noun Project
-// Tennis Player Vector Icon by ProSymbols from the Noun Project
-/ Squash player by Creative Stall from the Noun Project
-//Arrow by Numero Uno from the Noun Project
-//mute volume by Ján Slobodník from the Noun Project
-// http://minutelabs.io/
+- White Brick Wall by Josh Hahn from http://6iee.com/332876.html
+- Running Cat from http://media.photobucket.com/
+- Raindrop outline shape by Esteban Oliva from http://freevector.co/vector-icons/weather/raindrop-outlined-shape.html
+- Splat by Clker-Free-Vector-Images from https://pixabay.com/en/splat-black-splatter-splash-ink-311428/
+- Squash player by Creative Stall from the Noun Project
+- Tennis Player Vector Icon by ProSymbols from the Noun Project
+- Arrow by Numero Uno from the Noun Project
+- Keyboard by Paul te Kortschot from the Noun Project
+- WASD key from http://labs.minutelabs.io/Relativistic-Space-Sheep/
+- Mouse by Anton Håkanson from the Noun Project
+- mute volume by Ján Slobodník from the Noun Project
 
 Audio
-
-// http://soundbible.com/2067-Blop.html
+- River Flows in You by Yiruma from https://www.youtube.com/watch?v=rrDoJ8Dk-oQ
+- Rain Sound by Relax With Nature from https://www.youtube.com/watch?v=GlO3MdKTpd4
+- Blop by Mark DiAngelo from http://soundbible.com/2067-Blop.html
+- Cat sound effect - meow by Winry Marini from https://www.youtube.com/watch?v=HIdLXBn-Py0
 
 ==============================================================
 
