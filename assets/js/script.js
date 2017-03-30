@@ -1,15 +1,15 @@
 // # Avoid the Raindrops
-// =====================
+// =======================
 // darrelltzj for GA WDI 9
 
 $(document).ready(function () {
-  // #---Game Canvas and Environment---
+  // #---Game Canvas and Environment Variables---
   var canvasTag = $('#gameCanvas')[0]
   var ctx = canvasTag.getContext('2d')
   $('#gameCanvas')[0].width = window.innerWidth
   $('#gameCanvas')[0].height = window.innerHeight
 
-  //Offset to floor of background image
+  // offsetPercent to offset character to floor of background image
   var offsetPercent = 0.97
   var gameEnvironment = {
     width: canvasTag.width,
@@ -18,16 +18,16 @@ $(document).ready(function () {
     posY: 0,
     imageFolder: 'background',
     selectedFrame: 0,
-    imageFormat: '\.jpg'
+    imageFormat: '.jpg'
   }
 
-  // #---Timer---
+  // #---Timer Variables---
   var timerId = 0
   var totalTimeCount = 0
   var second = 0
   var minute = 0
 
-  // #---Game Status---
+  // #---Game Status Variables---
   var pause = false
   var gameOver = true
 
@@ -43,48 +43,49 @@ $(document).ready(function () {
   var indicatorX = 0
   var indicatorY = 0
 
-  // #---Player Selection ---
+  // #---Player Selection Variables---
   var singlePlayer = true
   var playerOneControl = 1
   var playerTwoControl = 2
   var startingPlayerCount = 1
 
   // #---Player Character Array---
-  // ## Controls: mouse: 0, left / right: 1, WASD: 2
   var characterArr = []
-  var cat = new Character(0.11, (0.8 * canvasTag.width), (342 / 575), offsetPercent, 'cat', '\.png', 8, 4, playerOneControl)
-  var cat2 = new Character(0.11, (0.1 * canvasTag.width), (342 / 575), offsetPercent, 'cat2', '\.png', 8, 4, playerTwoControl)
+  // #---Create cats---
+  // (sizePercent, posX, heightWidthRatio, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl)
+  var cat = new Character(0.11, (0.8 * canvasTag.width), (342 / 575), offsetPercent, 'cat', '.png', 8, 4.5, playerOneControl)
+  var cat2 = new Character(0.11, (0.1 * canvasTag.width), (342 / 575), offsetPercent, 'cat2', '.png', 8, 4.5, playerTwoControl)
 
-  // #---Resize---
+  // #---Resize Variables---
   var oldCanvasWidth = canvasTag.width
   var oldCatPosX = cat.posX
   var oldCat2PosX = cat2.posX
 
-  // #---Mute Toggle---
+  // #---Mute Toggle Variables---
   var mute = false
 
-  // #---Raindrop functions---
+  // #---Raindrops' Functions---
   function spawnRaindrops () {
     if (raindropsArr.length === 0) {
-      this.raindrop = new Raindrops
+      this.raindrop = new Raindrops()
       raindropsArr.push(this.raindrop)
     }
     else if (raindropSpawnTimer <= 0) {
-      this.raindrop = new Raindrops
+      this.raindrop = new Raindrops()
       raindropsArr.push(this.raindrop)
       raindropSpawnTimer = raindropSpawnDuration
     }
-    raindropSpawnTimer-- //SHIFT THIS TO UPDATETIME FOR ACCURATE COUNT
+    raindropSpawnTimer--
   }
   function checkRaindrops () {
     raindropsArr.forEach(function (raindrop, i) {
       createFrame(raindrop)
       raindrop.collisionDetection()
-      raindrop.faceOrientation() //CHANGE!
+      raindrop.selectFrame()
       raindrop.move()
       if (raindrop.collided) {
         if (raindrop.raindropRemovalTime === 0) {
-          raindropsArr.splice(i,1)
+          raindropsArr.splice(i, 1)
         }
         else {
           raindrop.raindropRemovalTime--
@@ -92,6 +93,8 @@ $(document).ready(function () {
       }
     })
   }
+
+  // #---Raindrop Contructor and Prototype---
   function Raindrops () {
     this.sizePercent = 0.016
     this.width = this.sizePercent * canvasTag.width
@@ -100,7 +103,7 @@ $(document).ready(function () {
     this.posY = 0
     this.imageFolder = 'raindrop'
     this.selectedFrame = 0
-    this.imageFormat = '\.png'
+    this.imageFormat = '.png'
     this.velocity = 0
     this.gravity = 0.07
     this.collided = false
@@ -119,7 +122,7 @@ $(document).ready(function () {
       this.gravity = 0
     }
   }
-  Raindrops.prototype.faceOrientation = function () {
+  Raindrops.prototype.selectFrame = function () {
     if (this.collided) {
       this.selectedFrame = 1
     }
@@ -147,15 +150,15 @@ $(document).ready(function () {
     }
   }
 
-  // #---Character functions---
-  function checkCharacterLives() {
+  // #---Characters' Functions---
+  function checkCharacterLives () {
     characterArr.forEach(function (character, i) {
       if (character.lives === 0) {
-        characterArr.splice(i,1)
+        characterArr.splice(i, 1)
       }
     })
   }
-  function drawCharacter() {
+  function drawCharacter () {
     characterArr.forEach(function (character) {
       createFrame(character)
     })
@@ -167,7 +170,9 @@ $(document).ready(function () {
       displayCat2Lives()
     }
   }
-  function Character(sizePercent, posX, heightWidthRatio, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl) {
+
+  // # Character Contructor and Prototype
+  function Character (sizePercent, posX, heightWidthRatio, posYOffsetPercent, mainImageFolder, imageFormat, frameLength, velocity, playerControl) {
     this.sizePercent = sizePercent
     this.posYOffsetPercent = posYOffsetPercent
 
@@ -178,12 +183,13 @@ $(document).ready(function () {
     this.posY = 0.97 * canvasTag.height - this.height
 
     this.mainImageFolder = mainImageFolder
-    this.orientation = 0 //0 is right 1 is left
+    // orientation: 0 is right 1 is left
+    this.orientation = 0
     this.selectedFrame = 0
     this.imageFormat = imageFormat
     this.frameLength = frameLength
-    this.imageFolder = this.mainImageFolder + '\/' + this.orientation
-    this.frameChangeDelay = Math.floor(32 / this.frameLength) //32
+    this.imageFolder = this.mainImageFolder + '/' + this.orientation
+    this.frameChangeDelay = Math.floor(24 / this.frameLength)
 
     this.faceRight = true
     this.velocity = velocity
@@ -192,15 +198,17 @@ $(document).ready(function () {
 
     this.lives = 9
 
-    this.rightPressed = false;
-    this.leftPressed = false;
+    this.rightPressed = false
+    this.leftPressed = false
   }
+
+  // ## Controls: mouse: 0, left / right: 1, WASD: 2
   Character.prototype.control = function () {
     if (this.playerControl === 0) {
       $(document).on('mousemove', function (e) {
         e.preventDefault()
         var relativeX = e.clientX - canvasTag.offsetLeft
-        if(relativeX > 0 && relativeX < canvasTag.width) {
+        if (relativeX > 0 && relativeX < canvasTag.width) {
           if ((this.posX + this.width) < relativeX) {
             this.rightPressed = true
             this.leftPressed = false
@@ -229,10 +237,10 @@ $(document).ready(function () {
 
       $(document).on('keyup', function (e) {
         e.preventDefault()
-        if(e.keyCode == 39) {
+        if (e.keyCode === 39) {
           this.rightPressed = false
         }
-        else if(e.keyCode == 37) {
+        else if (e.keyCode === 37) {
           this.leftPressed = false
         }
       }.bind(this))
@@ -240,20 +248,20 @@ $(document).ready(function () {
     else if (this.playerControl === 2) {
       $(document).on('keydown', function (e) {
         e.preventDefault()
-        if(e.keyCode == 68) {
+        if (e.keyCode === 68) {
           this.rightPressed = true
         }
-        else if(e.keyCode == 65) {
+        else if(e.keyCode === 65) {
           this.leftPressed = true
         }
       }.bind(this))
 
       $(document).on('keyup', function (e) {
         e.preventDefault()
-        if(e.keyCode == 68) {
+        if (e.keyCode === 68) {
           this.rightPressed = false
         }
-        else if(e.keyCode == 65) {
+        else if (e.keyCode === 65) {
           this.leftPressed = false
         }
       }.bind(this))
@@ -264,12 +272,12 @@ $(document).ready(function () {
     this.controlAnimation()
   }
   Character.prototype.move = function () {
-    if(this.rightPressed && this.posX < canvasTag.width - this.width) {
+    if (this.rightPressed && this.posX < canvasTag.width - this.width) {
       this.posX += this.velocity
       this.faceRight = true
     }
 
-    else if(this.leftPressed && this.posX > 0) {
+    else if (this.leftPressed && this.posX > 0) {
       this.posX -= this.velocity
       this.faceRight = false
     }
@@ -281,7 +289,7 @@ $(document).ready(function () {
     else if (!this.faceRight) {
       this.orientation = 1
     }
-    this.imageFolder = this.mainImageFolder + '\/' + this.orientation
+    this.imageFolder = this.mainImageFolder + '/' + this.orientation
   }
   Character.prototype.controlAnimation = function () {
     if (this.rightPressed || this.leftPressed || this.selectedFrame !== 0) {
@@ -296,12 +304,11 @@ $(document).ready(function () {
       else {
         this.selectedFrame++
       }
-      this.frameChangeDelay = Math.floor(24 / this.frameLength) //32
+      this.frameChangeDelay = Math.floor(24 / this.frameLength)
     }
     else {
       this.frameChangeDelay--
     }
-    // console.log(this.selectedFrame)
   }
   Character.prototype.resize = function () {
     this.width = this.sizePercent * canvasTag.width
@@ -309,13 +316,13 @@ $(document).ready(function () {
     this.posY = this.posYOffsetPercent * canvasTag.height - this.height
   }
 
-  // #---Draw Image and Text functions---
-  function createFrame(item) {
+  // #---Draw Image and Text on Canvas Functions---
+  function createFrame (item) {
     var image = new Image()
-    image.src = 'assets/img/' + item.imageFolder + '\/' + item.selectedFrame + item.imageFormat
+    image.src = 'assets/img/' + item.imageFolder + '/' + item.selectedFrame + item.imageFormat
     ctx.drawImage(image, item.posX, item.posY, item.width, item.height)
   }
-  function displayHit(posX, posY) {
+  function displayHit (posX, posY) {
     if (indicatorTimer === 0) {
       activateIndicator = false
       indicatorTimer = 15
@@ -326,22 +333,22 @@ $(document).ready(function () {
       ctx.fillText('-1', posX, posY)
     }
   }
-  function displayTime() {
+  function displayTime () {
     ctx.font = '40px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText(minute + ' : ' + second, (0.5 * (canvasTag.width - ctx.measureText(minute + ' : ' + second).width)), (0.07 * canvasTag.height))
   }
-  function displayCatLives() {
+  function displayCatLives () {
     ctx.font = '32px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Player One:  ' + cat.lives, (0.8 * canvasTag.width), (0.07 * canvasTag.height))
   }
-  function displayCat2Lives() {
+  function displayCat2Lives () {
     ctx.font = '32px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Player Two:  ' + cat2.lives, (0.04 * canvasTag.width), (0.07 * canvasTag.height))
   }
-  function displayStage(stage) {
+  function displayStage (stage) {
     ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Stage ' + stage, 0.5 * (canvasTag.width - ctx.measureText('Stage ' + stage).width), (0.4 * canvasTag.height))
@@ -349,7 +356,7 @@ $(document).ready(function () {
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
-  function displayBrace() {
+  function displayBrace () {
     ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Get Ready', 0.5 * (canvasTag.width - ctx.measureText('Get Ready').width), (0.4 * canvasTag.height))
@@ -357,7 +364,7 @@ $(document).ready(function () {
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
   }
-  function displayPause() {
+  function displayPause () {
     ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Game Paused', 0.5 * (canvasTag.width - ctx.measureText('Game Paused').width), (0.4 * canvasTag.height))
@@ -365,7 +372,7 @@ $(document).ready(function () {
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Resume', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Resume').width), (0.52 * canvasTag.height))
   }
-  function displayGameOver() {
+  function displayGameOver () {
     ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Game Over', 0.5 * (canvasTag.width - ctx.measureText('Game Over').width), (0.4 * canvasTag.height))
@@ -373,7 +380,7 @@ $(document).ready(function () {
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Restart', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Restart').width), (0.52 * canvasTag.height))
   }
-  function displayStart() {
+  function displayStart () {
     ctx.font = '80px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
     ctx.fillText('Avoid the Raindrops', 0.5 * (canvasTag.width - ctx.measureText('Avoid the Raindrops').width), (0.28 * canvasTag.height))
@@ -386,7 +393,7 @@ $(document).ready(function () {
     image.src = 'assets/img/start/singlePlayerToggle.png'
     ctx.drawImage(image, (0.43 * canvasTag.width), (0.55 * canvasTag.height), (0.14 * canvasTag.width), (12 / 30 * 0.14 * canvasTag.width))
   }
-  function displayDouble() {
+  function displayDouble () {
     var image = new Image()
     image.src = 'assets/img/start/doublePlayerToggle.png'
     ctx.drawImage(image, (0.43 * canvasTag.width), (0.55 * canvasTag.height), (0.14 * canvasTag.width), (12 / 30 * 0.14 * canvasTag.width))
@@ -419,11 +426,11 @@ $(document).ready(function () {
     }
   }
 
-  // #---Timer functions---
+  // #---Timer Functions---
   function twoDigit (digit) {
     return (digit < 10) ? '0' + digit.toString() : digit.toString()
   }
-  function updateTime() {
+  function updateTime () {
     if (!gameOver && !pause) {
       totalTimeCount++
       second = twoDigit(Math.floor(totalTimeCount % 60))
@@ -442,63 +449,63 @@ $(document).ready(function () {
   // #---Raindrop frequency / Stage Control---
   function controlStages () {
     if (!gameOver) {
-      switch(true) {
+      switch (true) {
         case (totalTimeCount > 0 && totalTimeCount <= 2):
-        raindropSpawnDuration = 20
-        displayBrace()
-        break
+          raindropSpawnDuration = 20
+          displayBrace()
+          break
         case (totalTimeCount > 2 && totalTimeCount <= 4):
-        raindropSpawnDuration = 16
-        break
+          raindropSpawnDuration = 16
+          break
         case (totalTimeCount > 4 && totalTimeCount <= 6):
-        raindropSpawnDuration = 12
-        displayStage(1)
-        break
+          raindropSpawnDuration = 12
+          displayStage(1)
+          break
         case (totalTimeCount > 6 && totalTimeCount <= 18):
-        raindropSpawnDuration = 12
-        break
+          raindropSpawnDuration = 12
+          break
         case (totalTimeCount > 18 && totalTimeCount <= 20):
-        raindropSpawnDuration = 8
-        displayStage(2)
-        break
+          raindropSpawnDuration = 8
+          displayStage(2)
+          break
         case (totalTimeCount > 20 && totalTimeCount <= 32):
-        raindropSpawnDuration = 8
-        break
+          raindropSpawnDuration = 8
+          break
         case (totalTimeCount > 32 && totalTimeCount <= 34):
-        raindropSpawnDuration = 5
-        displayStage(3)
-        break
+          raindropSpawnDuration = 5
+          displayStage(3)
+          break
         case (totalTimeCount > 34 && totalTimeCount <= 48):
-        raindropSpawnDuration = 5
-        break
+          raindropSpawnDuration = 5
+          break
         case (totalTimeCount > 48 && totalTimeCount <= 50):
-        raindropSpawnDuration = 20
-        break
+          raindropSpawnDuration = 20
+          break
         case (totalTimeCount > 50 && totalTimeCount <= 52):
-        raindropSpawnDuration = 4
-        displayStage(4)
-        break
-        case (totalTimeCount > 52 && totalTimeCount<= 76):
-        raindropSpawnDuration = 4
-        break
+          raindropSpawnDuration = 4
+          displayStage(4)
+          break
+        case (totalTimeCount > 52 && totalTimeCount <= 76):
+          raindropSpawnDuration = 4
+          break
         case (totalTimeCount > 76 && totalTimeCount <= 78):
-        raindropSpawnDuration = 3
-        displayStage(5)
-        break
+          raindropSpawnDuration = 3
+          displayStage(5)
+          break
         case (totalTimeCount > 78 && totalTimeCount <= 90):
-        raindropSpawnDuration = 3
-        break
+          raindropSpawnDuration = 3
+          break
         case (totalTimeCount > 90):
-        raindropSpawnDuration = 2
-        displayStage('Impossible')
-        break
+          raindropSpawnDuration = 2
+          displayStage('Bonus')
+          break
         default:
-        raindropSpawnDuration = 20
+          raindropSpawnDuration = 20
       }
     }
   }
 
-  // #---Pause functions---
+  // #---Pause Functions---
   function activatePause () {
     if (!gameOver) {
       pause = true
@@ -508,17 +515,17 @@ $(document).ready(function () {
     if (!gameOver) {
       if (pause) {
         $(document).on('keydown', function (e) {
-          if(e.keyCode == 32) {
+          if (e.keyCode === 32) {
             pause = false
           }
-        }.bind(this))
+        })
       }
       else {
         $(document).on('keydown', function (e) {
-          if(e.keyCode == 32) {
+          if (e.keyCode === 32) {
             pause = true
           }
-        }.bind(this))
+        })
       }
     }
   }
@@ -545,7 +552,7 @@ $(document).ready(function () {
   }
   $(window).on('blur', activatePause)
 
-  // #---Screen resize functions---
+  // #---Screen resize Functions---
   function activateResize () {
     $('#gameCanvas')[0].width = window.innerWidth
     $('#gameCanvas')[0].height = window.innerHeight
@@ -559,7 +566,7 @@ $(document).ready(function () {
   }
   $(window).on('resize', activateResize)
 
-  // #---Main Game Running function---
+  // #---Main Game Running Function---
   function runCanvas() {
     $('#gameTheme')[0].play()
     $('#gameTheme')[0].loop = true
@@ -577,7 +584,7 @@ $(document).ready(function () {
     drawCharacter()
     displayAudioStatus()
     if (activateIndicator) {
-      displayHit(indicatorX,indicatorY)
+      displayHit(indicatorX, indicatorY)
       indicatorTimer--
     }
     if (gameOver) {
@@ -593,7 +600,7 @@ $(document).ready(function () {
     }
   }
 
-  // #---Game Over functions---
+  // #---Game Over Functions---
   function checkGameOver () {
     if (characterArr.length === 0) {
       gameOver = true
@@ -601,7 +608,7 @@ $(document).ready(function () {
   }
   function checkRestart () {
     $(document).on('keydown', function (e) {
-      if(e.keyCode == 32) {
+      if (e.keyCode === 32) {
         document.location.reload()
       }
     })
@@ -621,26 +628,22 @@ $(document).ready(function () {
     }
   }
 
-  // #---Start functions---
-  function checkStart() {
+  // #---Start Functions---
+  function checkStart () {
     $(document).on('keydown', function (e) {
-      if(e.keyCode == 32 && gameOver) {
+      if (e.keyCode === 32 && gameOver) {
         e.preventDefault()
         gameOver = false
       }
     })
-    // $(document).on('dblclick', function (e) {
-    //   e.preventDefault()
-    //   gameOver = false
-    // })
   }
   function togglePlayer () {
     if (singlePlayer) {
       $(document).on('keydown', function (e) {
         e.preventDefault()
-        if(e.keyCode == 39 || e.keyCode == 37 || e.keyCode == 65 || e.keyCode == 68) {
+        if (e.keyCode === 39 || e.keyCode === 37 || e.keyCode === 65 || e.keyCode === 68) {
           singlePlayer = false
-          if(gameOver) {
+          if (gameOver) {
             $('#bloop')[0].play()
           }
         }
@@ -649,9 +652,9 @@ $(document).ready(function () {
     else if (!singlePlayer) {
       $(document).on('keydown', function (e) {
         e.preventDefault()
-        if(e.keyCode == 39 || e.keyCode == 37 || e.keyCode == 65 || e.keyCode == 68) {
+        if (e.keyCode === 39 || e.keyCode === 37 || e.keyCode === 65 || e.keyCode === 68) {
           singlePlayer = true
-          if(gameOver) {
+          if (gameOver) {
             $('#bloop')[0].play()
           }
         }
@@ -661,11 +664,11 @@ $(document).ready(function () {
   function toggleControl () {
     $(document).on('keydown', function (e) {
       e.preventDefault()
-      if (e.keyCode == 38 || e.keyCode == 40) {
-        if(gameOver) {
+      if (e.keyCode === 38 || e.keyCode === 40) {
+        if (gameOver) {
           $('#bloop')[0].play()
         }
-        if(playerOneControl === 1) {
+        if (playerOneControl === 1) {
           playerOneControl = 0
           playerTwoControl = 2
         }
@@ -673,11 +676,11 @@ $(document).ready(function () {
           playerOneControl = 1
         }
       }
-      if (e.keyCode == 87 || e.keyCode == 83) {
-        if(gameOver) {
+      if (e.keyCode === 87 || e.keyCode === 83) {
+        if (gameOver) {
           $('#bloop')[0].play()
         }
-        if(playerTwoControl === 2 && playerOneControl !== 0) {
+        if (playerTwoControl === 2 && playerOneControl !== 0) {
           playerTwoControl = 0
         }
         else if (playerTwoControl === 0) {
@@ -700,7 +703,7 @@ $(document).ready(function () {
       startingPlayerCount = 2
     }
   }
-  function initialize() {
+  function initialize () {
     $('#coverTheme')[0].play()
     $('#coverTheme')[0].loop = true
     ctx.clearRect(0, 0, canvasTag.width, canvasTag.height)
@@ -751,7 +754,7 @@ $(document).ready(function () {
   // #---Mute Listener---
   $(document).on('keydown', function (e) {
     e.preventDefault()
-    if (e.keyCode == 77) {
+    if (e.keyCode === 77) {
       if (mute) {
         mute = false
         $('.audio')[0].muted = false
@@ -773,9 +776,8 @@ $(document).ready(function () {
 
   // #---Escape to restart---
   $(document).on('keydown', function (e) {
-    if(e.keyCode == 27) {
+    if (e.keyCode === 27) {
       document.location.reload()
     }
   })
-
 })
