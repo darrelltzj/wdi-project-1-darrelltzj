@@ -488,10 +488,10 @@ $(document).ready(function () {
           raindropSpawnDuration = 3
           displayStage(5)
           break
-        case (totalTimeCount > 78 && totalTimeCount <= 90):
+        case (totalTimeCount > 78 && totalTimeCount <= 100):
           raindropSpawnDuration = 3
           break
-        case (totalTimeCount > 90):
+        case (totalTimeCount > 100):
           raindropSpawnDuration = 2
           displayStage('Bonus')
           break

@@ -1,10 +1,12 @@
 # Avoid the Raindrops
-**Avoid the Raindrops** is a game developed at General Assembly's Web Development Immersive (WDI) Course. Black the cat dislikes the rain. In the game, each player controls their version of Black the cat by maneuvering it along the screen's x-axis. Each cat has nine lives and loses one whenever it comes into contact with a rain droplet. As the game progresses, the frequency of the raindrops increases. The aim is for each player to last the longest. The game ends when the winning player loses all its lives.
+**Avoid the Raindrops** is a game developed for a [project assignment](https://jeremiahalex.gitbooks.io/wdi-sg/content/11-projects/project-1/readme.html) at General Assembly's Web Development Immersive (WDI) Course.
 
-*Avoid the Raindrops requires a physical keyboard and is best played on Chrome Version 56 or later.*
+Black the cat dislikes the rain. In the game, each player controls their version of Black the cat by maneuvering it along the screen's x-axis. Each cat has nine lives and loses one whenever it comes into contact with a rain droplet. As the game progresses, the frequency of the raindrops increases. The game has five stages with an additional bonus round. The aim is for each player to last the longest. The game ends when the winning player loses all its lives.
+
+*Avoid the Raindrops requires a physical keyboard and is best played on Chrome Desktop Browser Version 56 or later.*
 
 ## How to play
-The instructions below explain how the game can be controlled and played.
+The instructions below explain the game play and how the interface can be controlled.
 
 ### Key Control Summary
 | Key           | Function      |
@@ -22,28 +24,45 @@ The instructions below explain how the game can be controlled and played.
 | d             | Player 2 Right |
 
 ### Player Selection
-The game starts off at the player control selection page and can be played with either one or between two players. Use the *Left* and *Right* arrows or the *a* and *d* keys to toggle between single and double players.
+The game starts off at the player control selection page and can be played with either one or between two players. Players may use the *Left* and *Right* arrows or the *a* and *d* keys to toggle their selections.
 
-Players can use either the mouse or the keyboard to control their cats. Only one player can select the mouse. Users may use the *Up* and *Down* arrows and the *w* and *s* keys to select their preferred controls.
+Players may either use the mouse or the keyboard to control their cats. They may do so by pressing the *Up* and *Down* arrows and the *w* and *s* keys at the player selection page. Only one player can select the mouse at each time.
 
 Once players are comfortable with their control selections, they may press *Space* to begin the game.
 
 ### Controlling Black the Cat
-The cat for player 1 starts on the right while the cat for player 2 starts on the left.
+When the game starts, the cat for player 1 starts on the right while the cat for player 2 starts on the left.
 
-Keyboard Controls:
+**Keyboard Controls:**
+
 Player 1 uses the *Left* and *Right* arrows while player 2 uses the *a* and *d* keys to maneuver the cat left and right respectively.
 
-Mouse Control:
+**Mouse Control:**
+
 If the mouse control was selected, shifting the cursor to either side of the cat would move it towards the respective directions. Placing the cursor within the cat's width would cause the cat to be stationary.
 
-## About the Code
+### Demo
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=p1edCVsrYaY
+" target="_blank"><img src="http://img.youtube.com/vi/p1edCVsrYaY/0.jpg"
+alt="IMAGE ALT TEXT HERE" width="480" height="360" border="10" /></a>
 
+## Application and Development Process
 ### Built With
 [HTML Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [jQuery](https://jquery.com/) Application programming interface (API).
 
-### Flow Chart
+### Overall flow
+![Overall flow](http://i.imgur.com/WHqPZth.jpg)
 
+### Drawing on Canvas
+[Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) draws images by creating image Objects and assigning their src, x and y positions, width and height. The *createFrame* function draws the image of the item (cat / raindrop) each time it is called. Each item is an Object that has the properties of their respective image folder, selected frame, image format, x and y positions and width and height.
+
+```
+function createFrame (item) {
+  var image = new Image()
+  image.src = 'assets/img/' + item.imageFolder + '/' + item.selectedFrame + item.imageFormat
+  ctx.drawImage(image, item.posX, item.posY, item.width, item.height)
+}
+```
 
 ### Character Animation
 The initial plan was to use this gif to simulate the cat running.
@@ -51,11 +70,11 @@ The initial plan was to use this gif to simulate the cat running.
 
 ![Cat Gif](http://rs1366.pbsrc.com/albums/r779/mariperquinto/0550661001369318673_zpsc3a722ef.gif~c200)
 
-However, as HTML Canvas API was used in the making of the game, the canvas has to be cleared each time to remove and replace the previous positions of the characters and raindrops. The cat gif thus remains stationary like this:
+However, as [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) was used in the making of the game, the canvas has to be cleared each time to remove and replace the previous positions of the characters and raindrops. The cat gif to remain stationary like this:
 
 ![Stationary cat](http://i.imgur.com/IK7Vw7H.png)
 
-To work around this, the cat gif layers were separated.
+As a workaround , the cat gif layers were separated.
 
 ![0](http://i.imgur.com/IK7Vw7H.png)
 ![1](http://i.imgur.com/IK7Vw7H.png)
@@ -119,7 +138,10 @@ Character.prototype.faceOrientation = function () {
 ### Raindrop Collision Detection
 Each raindrop has a collided property that changes to true whenever the raindrop falls onto the ground or character.
 
-**Raindrop falling on the floor:**
+**Raindrop falling on the ground:**
+
+Raindrops collide with the ground whenever their height exceeds the ground (note that y increases downwards and x towards the right). Their y positions are changed back above the ground to ensure that they do not accelerate pass the ground.
+
 ![Collision with ground](http://i.imgur.com/SyRMvcg.jpg)
 ```
 if (this.posY + this.height >= offsetPercent * canvasTag.height) {
@@ -129,6 +151,8 @@ if (this.posY + this.height >= offsetPercent * canvasTag.height) {
 ```
 
 **Raindrop falling on a character:**
+
+A similar method is used to detect any collision onto a character. This time, the raindrop must be within the width of the character as well. If collided, the character loses a life and the hit-indicator is activated.
 
 ![Collision Detection](http://i.imgur.com/80sDPbU.jpg)
 ```
@@ -147,7 +171,11 @@ else {
 }
 ```
 
-### Spawning Raindrops
+### Spawning and Removing Raindrops
+
+A raindrop is created and pushed to an array each time the timer counts down to 0. There is a separate *controlStage* function that changes the spawn duration as the game progresses.
+
+The *checkRaindrops* function removes any raindrop that has collided. A delay is set to ensure that the splash image can be shown.
 
 ```
 var raindropSpawnDuration = 20
@@ -182,31 +210,19 @@ function checkRaindrops () {
 ```
 
 ## Randomizing Raindrop Spawn Location
-
+*randomX* function randomizes the raindrop spawn location.
 ```
-function Raindrops () {
-  this.sizePercent = 0.016
-  this.width = this.sizePercent * canvasTag.width
-  this.height = this.width
-  this.posX = this.randomX()
-  this.posY = 0
-  this.imageFolder = 'raindrop'
-  this.selectedFrame = 0
-  this.imageFormat = '.png'
-  this.velocity = 0
-  this.gravity = 0.07
-  this.collided = false
-  this.raindropRemovalTime = raindropRemovalDuration
-}
 Raindrops.prototype.randomX = function () {
   return Math.round(Math.random() * canvasTag.width)
 }
 ```
-## Raindrop animation
+## Raindrop Animation
 
 **Raindrop movement:**
 
-![test](http://www.millersville.edu/physics/experiments/013/fig14p1.gif)
+To animate the raindrop to appear like it is falling naturally, a gravity variable was set. This variable is constant but changes the velocity which in turn, changes the y position of the raindrop. The [image](http://www.millersville.edu/physics/experiments/013/fig14p1.gif) below illustrates this.
+
+![vConstantVsAConstant](http://www.millersville.edu/physics/experiments/013/fig14p1.gif)
 ```
 Raindrops.prototype.move = function () {
   if (!this.collided) {
@@ -222,6 +238,8 @@ Raindrops.prototype.move = function () {
 
 **Raindrop Splash**
 
+To simulate the splash, the image is changed whenever the raindrop collides.
+
 ```
 Raindrops.prototype.selectFrame = function () {
   if (this.collided) {
@@ -233,11 +251,21 @@ Raindrops.prototype.selectFrame = function () {
 }
 ```
 
-### User Interface
-Pause feature
-blur change tab Listener
+### Other Features
 
-## Authors
+On blur listener:
+
+As read [here](http://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active), the requestAnimationFrame pauses while the setInterval timer continues running whenever the user switches the tab. This affected the game as the rain spawn duration is depended on the game duration. The on blur listener below pauses the game whenever the tab becomes inactive to prevent this.
+
+```
+$(window).on('blur', activatePause)
+```
+
+## Author(s)
+
+- [Darrell Teo](https://github.com/darrelltzj)
+
+Feel free to comment or contribute to this repository.
 
 ## References
 * Canvas API, Collision detection and the left and right movement of the cat were referenced from https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
@@ -247,7 +275,7 @@ blur change tab Listener
 * *function twoDigit()* for the timer on script.js was referenced from http://stackoverflow.com/questions/5774042/format-a-number-exactly-two-in-length
 
 ## Credits
-This project is purely for educational purposes. It would not have been made possible without the following sources.
+This project is purely educational and experimental. It would not have been made possible without the following sources.
 
 Images
 - White Brick Wall by Josh Hahn from http://6iee.com/332876.html
