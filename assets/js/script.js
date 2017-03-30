@@ -341,10 +341,10 @@ $(document).ready(function () {
     ctx.fillStyle = '#716969'
     ctx.fillText('Player Two:  ' + cat2.lives, (0.04 * canvasTag.width), (0.07 * canvasTag.height))
   }
-  function displayCategory(category) {
+  function displayStage(stage) {
     ctx.font = '72px Comfortaa, cursive'
     ctx.fillStyle = '#716969'
-    ctx.fillText('Category ' + category, 0.5 * (canvasTag.width - ctx.measureText('Category ' + category).width), (0.4 * canvasTag.height))
+    ctx.fillText('Stage ' + stage, 0.5 * (canvasTag.width - ctx.measureText('Stage ' + stage).width), (0.4 * canvasTag.height))
     ctx.font = '16px Comfortaa, cursive'
     ctx.fillStyle = '#2D2E2E'
     ctx.fillText('Press Space to Pause', 0.5 * (canvasTag.width - ctx.measureText('Press Space to Pause').width), (0.52 * canvasTag.height))
@@ -447,26 +447,26 @@ $(document).ready(function () {
         raindropSpawnDuration = 20
         displayBrace()
         break
-        case (totalTimeCount > 2 && totalTimeCount <= 6):
+        case (totalTimeCount > 2 && totalTimeCount <= 4):
         raindropSpawnDuration = 16
         break
-        case (totalTimeCount > 6 && totalTimeCount <= 8):
+        case (totalTimeCount > 4 && totalTimeCount <= 6):
         raindropSpawnDuration = 12
-        displayCategory(5)
+        displayStage(1)
         break
-        case (totalTimeCount > 8 && totalTimeCount <= 19):
+        case (totalTimeCount > 6 && totalTimeCount <= 18):
         raindropSpawnDuration = 12
         break
-        case (totalTimeCount > 19 && totalTimeCount <= 21):
+        case (totalTimeCount > 18 && totalTimeCount <= 20):
         raindropSpawnDuration = 8
-        displayCategory(4)
+        displayStage(2)
         break
-        case (totalTimeCount > 21 && totalTimeCount <= 32):
+        case (totalTimeCount > 20 && totalTimeCount <= 32):
         raindropSpawnDuration = 8
         break
         case (totalTimeCount > 32 && totalTimeCount <= 34):
         raindropSpawnDuration = 5
-        displayCategory(3)
+        displayStage(3)
         break
         case (totalTimeCount > 34 && totalTimeCount <= 48):
         raindropSpawnDuration = 5
@@ -476,20 +476,21 @@ $(document).ready(function () {
         break
         case (totalTimeCount > 50 && totalTimeCount <= 52):
         raindropSpawnDuration = 4
-        displayCategory(2)
+        displayStage(4)
         break
         case (totalTimeCount > 52 && totalTimeCount<= 76):
         raindropSpawnDuration = 4
         break
         case (totalTimeCount > 76 && totalTimeCount <= 78):
         raindropSpawnDuration = 3
-        displayCategory(1)
+        displayStage(5)
         break
         case (totalTimeCount > 78 && totalTimeCount <= 90):
         raindropSpawnDuration = 3
         break
         case (totalTimeCount > 90):
         raindropSpawnDuration = 2
+        displayStage(999)
         break
         default:
         raindropSpawnDuration = 20
