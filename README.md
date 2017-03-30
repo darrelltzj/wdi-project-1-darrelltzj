@@ -47,6 +47,7 @@ If the mouse control was selected, shifting the cursor to either side of the cat
 
 ### Character Animation
 The initial plan was to use this gif to simulate the cat running.
+
 ![Cat Gif](http://rs1366.pbsrc.com/albums/r779/mariperquinto/0550661001369318673_zpsc3a722ef.gif~c200)
 
 However, as HTML Canvas API was used in the making of the game, the canvas has to be cleared each time to remove and replace the previous positions of the characters and raindrops. The cat gif thus remains stationary like this:
@@ -66,6 +67,11 @@ To work around this, the cat gif layers were separated.
 
 The code to control the cat's frame lies in the Character prototype *animateFrame*. Here is how it looks like:
 ```
+Character.prototype.controlAnimation = function () {
+  if (this.rightPressed || this.leftPressed || this.selectedFrame !== 0) {
+    this.animateFrame()
+  }
+}
 Character.prototype.animateFrame = function () {
   if (this.frameChangeDelay === 0) {
     if (this.selectedFrame === this.frameLength - 1) {
@@ -83,18 +89,79 @@ Character.prototype.animateFrame = function () {
 ```
 What this function does is that it selects each cat's image which would later be checked in the *createFrame* function. Each time this function is called, it changes the image. When it reaches the last image, it returns to the first image. A delay was later added to prevent the image from changing too fast.
 
-The delay was experimented around and 
+**Delay:**
 
-The delay is estimated to be around 0.05 seconds for this set
+The delay was experimented around and is estimated to be around 0.05 seconds (20 images per second) for this set of 8 images.
 
+It relies on the Canvas [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) function which changes the canvas at an estimated 1/60 seconds (60 times per second) each time.
 
-Math.floor(24 / this.frameLength) - 3 units
+*frameChangeDelay* was set at 24 / frame length. This means that it delays 3 times of [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame). The total delay is thus 3 * 1 / 60.
 
-[requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) ~ 1/60 seconds
+*This formula assumes that less delay is needed if there are more images, but must be experimented further if other images are used.*
+
+**Flipping the image:**
+
+The images could be scaled to -1 along the x-axis to flip the images, but as explained [here](http://stackoverflow.com/questions/8168217/html-canvas-how-to-draw-a-flipped-mirrored-image), the canvas context has to be saved, scaled and then restored, thus slowing down the game performance. To work around this, a separate file with the reverse images was created. The *faceOrientation* function controls which file (direction) is used. 0 was set as right facing images and 1 was set as left facing images.
+
+```
+Character.prototype.faceOrientation = function () {
+  if (this.faceRight) {
+    this.orientation = 0
+  }
+  else if (!this.faceRight) {
+    this.orientation = 1
+  }
+  this.imageFolder = this.mainImageFolder + '/' + this.orientation
+}
+```
+
+### Collision Detection
+
+![Collision Detection](http://i.imgur.com/80sDPbU.jpg)
+```
+Raindrops.prototype.collisionDetection = function () {
+  if (this.posY + this.height >= offsetPercent * canvasTag.height) {
+    this.collided = true
+    this.posY = offsetPercent * canvasTag.height - this.height
+  }
+  else {
+    characterArr.forEach(function (character) {
+      if (!this.collided && this.posX > character.posX && this.posX + this.width < character.posX + character.width && (this.posY + this.height) >= character.posY) {
+        this.collided = true
+        this.posY = character.posY - this.height
+        character.lives--
+        indicatorX = this.posX
+        indicatorY = this.posY - (this.height)
+        activateIndicator = true
+        $('#meow')[0].play()
+      }
+    }.bind(this))
+  }
+}
+```
 
 ### Raindrops Animation
 
-### Collision Detection
+```
+Raindrops.prototype.move = function () {
+  if (!this.collided) {
+    this.posY += this.velocity
+    this.velocity += this.gravity
+  }
+  else {
+    this.velocity = 0
+    this.gravity = 0
+  }
+}
+Raindrops.prototype.selectFrame = function () {
+  if (this.collided) {
+    this.selectedFrame = 1
+  }
+  else {
+    this.selectedFrame = 0
+  }
+}
+```
 
 ### User Interface
 Pause feature
@@ -104,6 +171,8 @@ blur change tab Listener
 
 ## References
 * Canvas API, Collision detection and the left and right movement of the cat were referenced from https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript
+
+* Flipping images on Canvas http://stackoverflow.com/questions/8168217/html-canvas-how-to-draw-a-flipped-mirrored-image
 
 * *function twoDigit()* for the timer on script.js was referenced from http://stackoverflow.com/questions/5774042/format-a-number-exactly-two-in-length
 

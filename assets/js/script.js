@@ -38,7 +38,7 @@ $(document).ready(function () {
   var raindropSpawnTimer = raindropSpawnDuration
 
   // #---Hit Indicator vaviables---
-  var indicatorTimer = 15
+  var indicatorTimer = 25
   var activateIndicator = false
   var indicatorX = 0
   var indicatorY = 0
@@ -227,10 +227,10 @@ $(document).ready(function () {
     else if (this.playerControl === 1) {
       $(document).on('keydown', function (e) {
         e.preventDefault()
-        if(e.keyCode == 39) {
+        if (e.keyCode === 39) {
           this.rightPressed = true
         }
-        else if(e.keyCode == 37) {
+        else if (e.keyCode === 37) {
           this.leftPressed = true
         }
       }.bind(this))
@@ -251,7 +251,7 @@ $(document).ready(function () {
         if (e.keyCode === 68) {
           this.rightPressed = true
         }
-        else if(e.keyCode === 65) {
+        else if (e.keyCode === 65) {
           this.leftPressed = true
         }
       }.bind(this))
@@ -325,7 +325,7 @@ $(document).ready(function () {
   function displayHit (posX, posY) {
     if (indicatorTimer === 0) {
       activateIndicator = false
-      indicatorTimer = 15
+      indicatorTimer = 25
     }
     else if (activateIndicator) {
       ctx.font = '72px Comfortaa, cursive'
