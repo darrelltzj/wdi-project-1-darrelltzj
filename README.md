@@ -295,8 +295,3 @@ Audio
 - Rain Sound by Relax With Nature from https://www.youtube.com/watch?v=GlO3MdKTpd4
 - Blop by Mark DiAngelo from http://soundbible.com/2067-Blop.html
 - Cat sound effect - meow by Winry Marini from https://www.youtube.com/watch?v=HIdLXBn-Py0
-
-==============================================================
-
-[How to write readme - Markdown CheatSheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)  
-[How to write a good readme for github repo!](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
