@@ -46,12 +46,16 @@ If the mouse control was selected, shifting the cursor to either side of the cat
 " target="_blank"><img src="http://img.youtube.com/vi/p1edCVsrYaY/0.jpg"
 alt="IMAGE ALT TEXT HERE" width="480" height="360" border="10" /></a>
 
+[Link to Game](https://wdi-sg.github.io/wdi-project-1-darrelltzj/)
+
 ## Application and Development Process
 ### Built With
 [HTML Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [jQuery](https://jquery.com/) Application programming interface (API).
 
 ### Overall flow
 ![Overall flow](http://i.imgur.com/WHqPZth.jpg)
+
+The *Initialize*, *Run Main Game* and *Run Game Over* are separate functions that run separate frames.
 
 ### Drawing on Canvas
 [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) draws images by creating image Objects and assigning their src, x and y positions, width and height. The *createFrame* function draws the image of the item (cat / raindrop) each time it is called. Each item is an Object that has the properties of their respective image folder, selected frame, image format, x and y positions and width and height.
@@ -220,7 +224,7 @@ Raindrops.prototype.randomX = function () {
 
 **Raindrop movement:**
 
-To animate the raindrop to appear like it is falling naturally, a gravity variable was set. This variable is constant but changes the velocity which in turn, changes the y position of the raindrop. The [image](http://www.millersville.edu/physics/experiments/013/fig14p1.gif) below illustrates this.
+To animate the raindrop to appear like it is falling realistically, a gravity variable was set. This variable is constant but it changes the velocity which in turn, changes the y position of the raindrop. The [image](http://www.millersville.edu/physics/experiments/013/fig14p1.gif) below illustrates the difference on how the animation would differ if constant velocity is used compared to constant acceleration.
 
 ![vConstantVsAConstant](http://www.millersville.edu/physics/experiments/013/fig14p1.gif)
 ```
