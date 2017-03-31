@@ -74,7 +74,7 @@ The initial plan was to use this gif to simulate the cat running.
 
 ![Cat Gif](http://rs1366.pbsrc.com/albums/r779/mariperquinto/0550661001369318673_zpsc3a722ef.gif~c200)
 
-However, as [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) was used in the making of the game, the canvas has to be cleared each time to remove and replace the previous positions of the characters and raindrops. The cat gif to remain stationary like this:
+However, as [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) was used in the making of the game, the canvas has to be cleared each time to remove and replace the previous positions of the characters and raindrops. This caused the cat gif to remain stationary like this:
 
 ![Stationary cat](http://i.imgur.com/IK7Vw7H.png)
 
