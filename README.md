@@ -189,8 +189,8 @@ var raindropSpawnTimer = raindropSpawnDuration
 
 function spawnRaindrops () {
   if (raindropsArr.length === 0 || raindropSpawnTimer <= 0) {
-    this.raindrop = new Raindrops()
-    raindropsArr.push(this.raindrop)
+    var raindrop = new Raindrops()
+    raindropsArr.push(raindrop)
     raindropSpawnTimer = raindropSpawnDuration
   }
   raindropSpawnTimer--
