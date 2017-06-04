@@ -1,9 +1,9 @@
 # Avoid the Raindrops
-[**Avoid the Raindrops**](https://wdi-sg.github.io/wdi-project-1-darrelltzj/) is a game developed for a [project assignment](https://jeremiahalex.gitbooks.io/wdi-sg/content/11-projects/project-1/readme.html) at General Assembly's Web Development Immersive (WDI) Course.
+[**Avoid the Raindrops**](https://darrelltzj.github.io/wdi-project-1-darrelltzj/) is a game developed for a [project assignment](https://jeremiahalex.gitbooks.io/wdi-sg/content/11-projects/project-1/readme.html) at General Assembly's Web Development Immersive (WDI) Course.
 
 Black the cat dislikes the rain. In the game, each player controls their version of Black the cat by maneuvering it along the screen's x-axis. Each cat has nine lives and loses one whenever it comes into contact with a rain droplet. As the game progresses, the frequency of the raindrops increases. The game has five stages with an additional bonus round. The aim is for each player to last the longest. The game ends when the winning player loses all its lives.
 
-*[Avoid the Raindrops](https://wdi-sg.github.io/wdi-project-1-darrelltzj/) requires a physical keyboard and is best played on Chrome Desktop Browser Version 56 or later.*
+*[Avoid the Raindrops](https://darrelltzj.github.io/wdi-project-1-darrelltzj/) requires a physical keyboard and is best played on Chrome Desktop Browser Version 56 or later.*
 
 ## How to play
 The instructions below explain the game play and how the interface can be controlled.
@@ -46,16 +46,11 @@ If the mouse control was selected, shifting the cursor to either side of the cat
 " target="_blank"><img src="http://img.youtube.com/vi/p1edCVsrYaY/0.jpg"
 alt="IMAGE ALT TEXT HERE" width="480" height="360" border="10" /></a>
 
-[Link to Game](https://wdi-sg.github.io/wdi-project-1-darrelltzj/)
+[Link to Game](https://darrelltzj.github.io/wdi-project-1-darrelltzj/)
 
 ## Application and Development Process
 ### Built With
 [HTML Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and [jQuery](https://jquery.com/) Application programming interface (API).
-
-### Overall flow
-![Overall flow](http://i.imgur.com/WHqPZth.jpg)
-
-The *Initialize*, *Run Main Game* and *Run Game Over* are separate functions that run separate frames.
 
 ### Drawing on Canvas
 [Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) draws images by creating image Objects and assigning their src, x and y positions, width and height. The *createFrame* function draws the image of the item (cat / raindrop) each time it is called. Each item is an Object that has the properties of their respective image folder, selected frame, image format, x and y positions and width and height.
@@ -70,7 +65,6 @@ function createFrame (item) {
 
 ### Character Animation
 The initial plan was to use this gif to simulate the cat running.
-
 
 ![Cat Gif](http://rs1366.pbsrc.com/albums/r779/mariperquinto/0550661001369318673_zpsc3a722ef.gif~c200)
 
@@ -259,11 +253,18 @@ Raindrops.prototype.selectFrame = function () {
 
 On blur listener:
 
-As read [here](http://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active), the requestAnimationFrame pauses while the setInterval timer continues running whenever the user switches the tab. This affected the game as the rain spawn duration is depended on the game duration. The on blur listener below pauses the game whenever the tab becomes inactive to prevent this.
+As read [here](http://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active), the requestAnimationFrame pauses while the setInterval timer continues running whenever the user switches the tab. This affected the game as the rain spawn duration is dependent on the game duration. The on blur listener below pauses the game whenever the tab becomes inactive to prevent this.
 
 ```
 $(window).on('blur', activatePause)
 ```
+
+## Areas to improve on
+
+**Collision Detection on cat's body**
+
+**Gravity according to height of wall? percent?**
+
 
 ## Author(s)
 
