@@ -263,8 +263,7 @@ $(window).on('blur', activatePause)
 
 **Collision Detection on cat's body**
 
-**Gravity according to height of wall? percent?**
-
+Currently, the game detects a collision when the raindrop hits the highest point of the cat (in this case, its head). This causes a collision to be detected when a raindrop passes the cat's head but before it hits the cat's body. A possible solution could be to split the cat's image by its head and body and detect collisions on each heights separately.
 
 ## Author(s)
 
