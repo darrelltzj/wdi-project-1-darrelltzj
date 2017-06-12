@@ -1,7 +1,7 @@
 # Avoid the Raindrops
 [**Avoid the Raindrops**](https://darrelltzj.github.io/wdi-project-1-darrelltzj/) is a game developed for a [project assignment](https://jeremiahalex.gitbooks.io/wdi-sg/content/11-projects/project-1/readme.html) at General Assembly's Web Development Immersive (WDI) Course.
 
-Black the cat dislikes the rain. In the game, each player controls their version of Black the cat by maneuvering it along the screen's x-axis. Each cat has nine lives and loses one whenever it comes into contact with a rain droplet. As the game progresses, the frequency of the raindrops increases. The game has five stages with an additional bonus round. The aim is for each player to last the longest. The game ends when the winning player loses all its lives.
+Black the cat dislikes the rain. In the game, each player controls their version of Black the cat by maneuvering it along the screen's x-axis. Each cat has nine lives and loses one whenever it comes into contact with a rain droplet. As the game progresses, the frequency of the raindrops increases. The game has five stages with an additional bonus round. The aim is for each player to last the longest. The game ends when the player's cat loses all its lives.
 
 *[Avoid the Raindrops](https://darrelltzj.github.io/wdi-project-1-darrelltzj/) requires a physical keyboard and is best played on Chrome Desktop Browser Version 56 or later.*
 
